@@ -1,0 +1,16 @@
+#!${SHELL}
+echo "Starting ${0}"
+
+alias k='kubectl'
+alias kp='k get pods -n $n'
+alias kx='kubectx'
+alias kn='kubens'
+
+# switch context
+alias kx-inf='kubectx sap-infra'
+alias kx-k1inf='kubectx k1-infra'
+alias kx-k2inf='kubectx k2-infra'
+alias kx-dev='kubectx k2-dev'
+alias kx-dev='kubectx sap-dev'
+alias kx-stage='kubectx sap-stage'
+alias kx-prod='kubectx sap-prod'

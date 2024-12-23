@@ -1,0 +1,50 @@
+#!${SHELL}
+echo "Starting '${0}'" # echo "${1}" # echo "3_aliases"
+
+# shell aliases for bash are also in .bash_it/aliases/available
+
+alias ll='ls -l'
+#alias ls='ls -GwF'
+alias lh='ls -lh'
+
+alias ping='ping -c 3'
+alias mkdir='mkdir -p'
+
+# setting datetime need to happen before we replace the default `date` behavior
+alias datetime='date +%y%m%d-%_H:%M:%S'
+alias date='date +%y-%m-%d'
+
+# redefine find to exclude hidden dirs by default
+alias find='f(){ find "$@" -not -path "*/\.*";  unset -f f; }; f'
+
+#alias showdns='resolvectl status'
+alias showdns='resolvectl dns wlo1'
+alias flushdns='resolvectl flush-caches'
+
+# CloudFlare 1.1.1.1 addresses:
+# 1.1.1.1, 1.0.0.1	2606:4700:4700::1111, 2606:4700:4700::1001
+alias setdns='resolvectl dns wlo1 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001'
+alias resetdns='resolvectl dns wlo1 192.168.1.1 2002:4591:9ab7:0:deef:9ff:feaa:467a'
+
+alias ipconfig='ifconfig | grep -E "inet\b"'
+alias myip=ipconfig
+
+# glab cli is expected to be installed via asdf
+alias mr='glab mr --labels please-review,assign-sre --remove_source_branch --squash --target $(git rev-parse --abbrev-ref --symbolic-full-name @{u})'
+alias mra='glab mr --labels please-review --remove_source_branch --squash --target $(git rev-parse --abbrev-ref --symbolic-full-name @{u}) --assignee '
+alias mrwip='glab mr --message "WIP" --remove_source_branch --squash --target $(git rev-parse --abbrev-ref --symbolic-full-name @{u})'
+
+# docker
+# alias docker-clean='docker ps -aq --filter status=dead --filter status=exited | xargs docker rm -v'
+
+# alias dockerstart='systemctl --user start docker --no-pager'
+# alias dockerstatus='systemctl --user status docker --no-pager'
+# alias dockerstop='systemctl --user stop docker --no-pager'
+
+# ECR login
+alias docker=podman
+# aws --profile subsplash ecr get-login-password
+alias ecr-login='aws ecr get-login-password --region $AWS_REGION | podman login $ECR_URL --username AWS --password-stdin'
+
+# kubernetes
+source ./tools/kube-aliases
