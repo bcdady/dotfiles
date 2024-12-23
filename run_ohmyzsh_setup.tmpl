@@ -1,0 +1,12 @@
+{{ if eq .chezmoi.os "darwin" }}
+#!/bin/zsh
+# Install Oh My Zsh
+echo "Detected MacOS; Installing Oh My Zsh"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+{{ else if eq .chezmoi.os "linux" }}
+# linux
+#!/bin/bash
+echo "Detected Linux; Skipping Oh My Zsh setup"
+
+{{ end }}
