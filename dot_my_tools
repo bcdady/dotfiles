@@ -1,0 +1,116 @@
+{{ if eq .chezmoi.os "darwin" }}
+#!/bin/zsh
+{{ else if eq .chezmoi.os "linux" }}
+# linux
+#!/usr/bin/bash
+{{ end }}
+echo "Starting '${0}'"
+
+{{ if eq .chezmoi.os "linux" }}
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
+  echo 'Configuring shell history'
+  # Set up Shell History
+  # hstr --show-configuration
+  alias hh=hstr                 # hh to be alias for hstr
+  shopt -s histappend           # append new history items to .bash_history
+  export HISTCONTROL=ignoreboth # leading space hides commands from history
+  export HISTFILESIZE=10000     # increase history file size (default is 500)
+  export HISTIGNORE='rm *:history*:printenv*'
+  export HISTSIZE=${HISTFILESIZE} # increase history size (default is 500)
+  export HSTR_CONFIG=hicolor      # get more colors
+
+  # ensure synchronization between bash memory and history file
+  export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
+  # if this is interactive shell, then bind hstr to Ctrl-r (for Vi mode check doc)
+  if [[ $- =~ .*i.* ]]; then bind '"\C-r": "\C-a hstr -- \C-j"'; fi
+  # if this is interactive shell, then bind 'kill last command' to Ctrl-x k
+  if [[ $- =~ .*i.* ]]; then bind '"\C-xk": "\C-a hstr -k \C-j"'; fi
+fi
+{{ end }}
+
+# asdf
+# shellcheck disable=SC1091
+[[ -f "${HOME}/.asdf/asdf.sh" ]] && source "${HOME}/.asdf/asdf.sh"
+# shellcheck disable=SC1091
+[[ -f "${HOME}/.asdf/completions/asdf.bash" ]] && source "${HOME}/.asdf/completions/asdf.bash"
+
+# turn on git cli completion
+# shellcheck disable=SC1091
+test "$TERM_PROGRAM" = "WarpTerminal" || source /usr/share/bash-completion/completions/git
+
+# aws cli autocomplete, with aws installed via asdf
+test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(asdf which aws | sed 's/bin\/aws/bin\/aws_completer/')" aws
+
+{{ if eq .chezmoi.os "linux" }}
+test "$TERM_PROGRAM" = "WarpTerminal" || test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
+{{ end }}
+
+# list available versions of python
+asdf list all python | grep -v rc | grep -v dev | grep ^3\.1[0-9] | tail
+# check which python is active via asdf
+echo ''
+echo 'Current python version:'
+asdf current python
+# Make sure python pip is up to date
+# echo 'Upgrade PIP'
+python3 -m pip install --user --upgrade pip
+
+{{ if eq .chezmoi.os "linux" }}
+# configure vpn aliases for CLI on linux
+
+# OpenVPN CLI
+# shellcheck disable=SC2139
+alias vpn="$(command -v openvpn3)"
+vpnprofile='subsplash' # "$HOME/.config/openvpn/HPDevOne_bryan@subsplash_com@subsplash.openvpn.com.ovpn"
+alias vpnc='vpn session-start -c $vpnprofile &> /dev/null && vpn sessions-list'
+alias vpnd='vpn session-manage -D --config $vpnprofile' # $(vpn sessions-list | grep Path | head -n 1 | cut -d ":" -f2 | tr -d [:space:])'
+alias vpns='vpn sessions-list'
+
+echo ''
+# Confirm that the expected VPN profile is available
+# if [[ $(vpn configs-list | wc -l) -le 5 ]]; then
+# test -n "$(vpn configs-list | grep subsplash)" || \
+#   echo ''
+#   echo '! Importing subsplash profile'; \
+#   openvpn3 config-import --name subsplash --persistent --config "$HOME/.config/openvpn/HPDevOne_bryan@subsplash_com@subsplash.openvpn.com.ovpn"
+
+echo ''
+echo 'VPN status:'
+if (openvpn3 sessions-list | grep 'Client connected'); then
+  openvpn3 sessions-list | grep -B1 'Client connected'
+else
+  echo 'No VPN session found. Run `vpnc` to connect'
+fi
+
+# also, {{ if eq .chezmoi.os "linux" }}
+
+# https://starship.rs
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
+  echo 'Initializing starship'
+  command -v starship || curl -sS https://starship.rs/install.sh | sh
+  eval "$(starship init bash)"
+fi
+
+{{ end }}
+
+# Use AWS CLI to setup kubeconfig if necessary
+if [[ $(grep -c sap-prod ~/.kube/config) -eq 0 ]]; then
+  echo "Updating kubeconfig via aws eks"
+  for cluster in $(aws eks list-clusters --query 'clusters[*]' --output text); do
+    echo "aws eks update-kubeconfig --name ${cluster}"
+    # aws eks update-kubeconfig --name "${cluster}"
+    # kubectl config rename-context arn:aws:eks:us-west-2:576546042567:cluster/"${cluster}" "${cluster}"
+  done
+fi
+
+function getconfig() {
+  kubectl exec "$(kubectl get pods --namespace app-"${1}" -o name | head -n 1)" --namespace app-"${1}" -c app-base-http -- cat /go/config/"${1}".json
+}
+
+# Enable kubectl autocomplete
+# complete -o default -C $(kubectl completion bash) -F __start_kubectl kubectl
+# complete -o default -F __start_kubectl k
+test "$TERM_PROGRAM" = "WarpTerminal" || source <(kubectl completion bash)
+
+# Enable terraform autocomplete
+complete -C "$(asdf which terraform)" terraform
