@@ -1,0 +1,11 @@
+#!/bin/bash
+{{ if eq .chezmoi.os "darwin" }}
+# Install Homebrew
+# https://brew.sh/
+echo "Detected MacOS; Installing Homebrew"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{ else if eq .chezmoi.os "linux" }}
+# linux
+echo "Detected Linux; Skipping Homebrew setup"
+
+{{ end }}

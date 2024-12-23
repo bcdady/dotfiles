@@ -1,0 +1,34 @@
+{{ if eq .chezmoi.os "darwin" }}
+#!/bin/zsh
+{{ else if eq .chezmoi.os "linux" }}
+# linux
+#!/usr/bin/bash
+{{ end }}
+echo "Starting '${0}'"
+
+# ensure go path is defined, and also add GOPATH/bin in PATH
+export GOPATH="${HOME}/go"
+
+GOBIN="${GOPATH}/bin"
+
+# AUTH_TOKEN (JWT)
+export AUTH_TOKEN="DO NOT COMMIT SECRETS"
+
+# GITLAB ACCESS_KEY
+export ACCESS_KEY="DO NOT COMMIT SECRETS"
+export GITLAB_HOST="DO NOT COMMIT SECRETS"
+export EDITOR="code -r"
+
+#OpenAI key, used by gptcommit
+export OPENAI_API_KEY="sk-DO NOT COMMIT SECRETS"
+
+# AWS CLI
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
+export AWS_DEFAULT_REGION='us-west-2'
+# See also "aws cli autocomplete" in ./2_tools
+export AWS_CLI_AUTO_PROMPT='on-partial'
+export AWS_PROFILE='prod-admin'
+export AWS_RETRY_MODE='adaptive'
+
+# Krew
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"

@@ -1,0 +1,4 @@
+.zshrc
+{{- if ne .chezmoi.os "darwin" }}
+.macos
+{{- end }}
