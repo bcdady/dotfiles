@@ -61,18 +61,10 @@ python3 -m pip install --user --upgrade pip
 # OpenVPN CLI
 # shellcheck disable=SC2139
 alias vpn="$(command -v openvpn3)"
-vpnprofile='subsplash' # "$HOME/.config/openvpn/HPDevOne_bryan@subsplash_com@subsplash.openvpn.com.ovpn"
+vpnprofile='subsplash'
 alias vpnc='vpn session-start -c $vpnprofile &> /dev/null && vpn sessions-list'
 alias vpnd='vpn session-manage -D --config $vpnprofile' # $(vpn sessions-list | grep Path | head -n 1 | cut -d ":" -f2 | tr -d [:space:])'
 alias vpns='vpn sessions-list'
-
-echo ''
-# Confirm that the expected VPN profile is available
-# if [[ $(vpn configs-list | wc -l) -le 5 ]]; then
-# test -n "$(vpn configs-list | grep subsplash)" || \
-#   echo ''
-#   echo '! Importing subsplash profile'; \
-#   openvpn3 config-import --name subsplash --persistent --config "$HOME/.config/openvpn/HPDevOne_bryan@subsplash_com@subsplash.openvpn.com.ovpn"
 
 echo ''
 echo 'VPN status:'
@@ -98,8 +90,6 @@ if [[ $(grep -c sap-prod ~/.kube/config) -eq 0 ]]; then
   echo "Updating kubeconfig via aws eks"
   for cluster in $(aws eks list-clusters --query 'clusters[*]' --output text); do
     echo "aws eks update-kubeconfig --name ${cluster}"
-    # aws eks update-kubeconfig --name "${cluster}"
-    # kubectl config rename-context arn:aws:eks:us-west-2:576546042567:cluster/"${cluster}" "${cluster}"
   done
 fi
 

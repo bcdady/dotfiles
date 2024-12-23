@@ -1,0 +1,113 @@
+[alias]
+	bd = branch -D
+	br = branch
+	cb = checkout -b
+	ci = commit
+	cl = clone
+	co = checkout
+	cm = checkout main
+	cmm = checkout main
+
+	fa = fetch --all --auto-maintenance --prune --prune-tags
+	fad = fetch --all --auto-maintenance --dry-run --prune --prune-tags --recurse-submodules --tags
+	up = pull --rebase --autostash --prune
+
+	wc = whatchanged --graph --decorate --abbrev-commit --date-order --all --color=always --ignore-all-space --ignore-blank-lines --ignore-space-at-eol --ignore-space-change --ignore-submodules --no-merges --parents
+	what = wc
+	x1 = reflog expire --expire=now --all
+	x2 = gc --prune=now
+
+	new = "!git init && git commit -m “init” --allow-empty"
+	ignored = ls-files --others
+	amend = commit --amend
+	same = commit --amend --no-edit
+	please = push --force-with-lease
+	cleanup = "!git branch --merged | grep -v '\\*\\|master\\|main\\|develop\\gh-pages' | xargs -n 1 git branch -d"
+	gone = ! "git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D"
+
+	dc = diff --cached
+	dlc = diff --cached HEAD^
+	diff = diff --word-diff
+	dr = "!f() { git diff "$1"^.."$1"; }; f"
+
+	la = "!git config -l | grep alias | cut -c 7-"
+	lg = log --stat
+	lgg = log --graph -42
+	lo = log --oneline --decorate -42
+	lod = log --graph -42 --pretty='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short
+
+	ls-latest-tag = describe --tags
+	ls-tags = "!git tag --sort=committerdate | tail -n 5"
+	# "!git ls-remote --tags . | tail -n 6"
+	# $(git remote) | grep -Ev ""\^\{\}$""
+
+	recover = "!${HOME}/.tools/git-recover"
+
+	r = reset
+	r1 = reset HEAD^
+	r2 = reset HEAD^^
+	rh = reset --hard
+	rh1 = reset HEAD^ --hard
+	rh2 = reset HEAD^^ --hard
+	rho = reset --hard origin
+
+	st = "!onefetch" # st = status
+	s = status --short --branch
+
+	sa = stash apply
+	sl = stash list
+	ss = stash save
+	sd = stash drop
+
+	set-upstream = !git branch --set-upstream-to=origin/$(git symbolic-ref --short HEAD)
+	code-changes = "!git log --format=format: --name-only | egrep -v '^$' | sort | uniq -c | sort -rg | head -10"
+	cc = "!git code-changes"
+	aliases = config --get-regexp '^alias\\.'
+
+[user]
+  [credential]
+  # https://learn.microsoft.com/en-us/azure/devops/repos/git/git-config?view=azure-devops&tabs=git-command-line#credential-helper
+	helper = store
+[init]
+	defaultBranch = main
+# [pull]
+#   # https://github.com/git/git/commit/66713ef3b00933755cdeff1ae823dda7b5843640
+# 	rebase = preserve
+[core]
+  # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+	autocrlf = input
+[diff]
+  # Also: EDITOR is probably set in env
+{{ if eq .chezmoi.os "darwin" }}
+	guitool = code -r
+	tool =  code -rmeld
+{{ else if eq .chezmoi.os "linux" }}
+	guitool = meld
+	tool = meld
+{{ end }}
+	guitool = meld
+	tool = meld
+[rebase]
+	autoStash = true
+	tool = code -r --wait
+[fetch]
+	prune = true
+[http]
+  # for macOS, this should maybe be updated to openssl
+  # for Windows, this should be updated to schannel
+{{ if eq .chezmoi.os "darwin" }}
+	sslBackend = openssl
+{{ else if eq .chezmoi.os "linux" }}
+	sslBackend = gnutls
+{{ end }}
+[merge]
+{{ if eq .chezmoi.os "darwin" }}
+	tool = code
+{{ else if eq .chezmoi.os "linux" }}
+	tool= meld
+{{ end }}
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
