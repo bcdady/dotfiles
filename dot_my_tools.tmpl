@@ -46,15 +46,17 @@ test "$TERM_PROGRAM" = "WarpTerminal" || test -f ~/.resh/shellrc || curl -fsSL h
 {{ end }}
 
 # list available versions of python
-asdf list all python | grep -v rc | grep -v dev | grep ^3\.1[0-9] | tail
+echo 'Available python (3) versions / updates:'
+asdf list all python | grep -E '^3\.[0-9]{1,3}\.[0-9]{1,3}$' | tail -n 10 # grep -v rc | grep -v dev |
 # check which python is active via asdf
 echo ''
 echo 'Current python version:'
 asdf current python
 # Make sure python pip is up to date
 # echo 'Upgrade PIP'
-python3 -m pip install --user --upgrade pip
+command -v python3 && python3 -m pip install --user --upgrade pip
 
+echo ''
 {{ if eq .chezmoi.os "linux" }}
 # configure vpn aliases for CLI on linux
 
@@ -74,15 +76,13 @@ else
   echo 'No VPN session found. Run `vpnc` to connect'
 fi
 
-# also, {{ if eq .chezmoi.os "linux" }}
-
+# also, if eq .chezmoi.os "linux"
 # https://starship.rs
 if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
   echo 'Initializing starship'
   command -v starship || curl -sS https://starship.rs/install.sh | sh
   eval "$(starship init bash)"
 fi
-
 {{ end }}
 
 # Use AWS CLI to setup kubeconfig if necessary
@@ -100,6 +100,7 @@ function getconfig() {
 # Enable kubectl autocomplete
 # complete -o default -C $(kubectl completion bash) -F __start_kubectl kubectl
 # complete -o default -F __start_kubectl k
+
 test "$TERM_PROGRAM" = "WarpTerminal" || source <(kubectl completion bash)
 
 # Enable terraform autocomplete
