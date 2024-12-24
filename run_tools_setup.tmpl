@@ -1,0 +1,101 @@
+#!${SHELL}
+# Configure git global settings
+echo "Starting ${0}"
+echo ""
+#!/bin/bash
+{{ if eq .chezmoi.os "darwin" }}
+echo "Detected MacOS ..."
+# Warp Terminal
+echo "Installing Warp Terminal"
+brew install --cask warp
+echo ""
+# VS Code
+echo "Installing VS Code"
+
+echo ""
+# Meld
+# -- since meld is no longer available for macOS,
+# consider SemanticDiff in VS Code
+# Slack
+echo "Installing Slack"
+brew install --cask slack
+echo ""
+# Vivaldi browser
+echo "Installing Vivaldi"
+brew install --cask vivaldi
+echo ""
+# Bitwarden GUI
+echo "Installing Bitwarden (GUI)"
+brew install --cask bitwarden
+echo ""
+# Bitwarden CLI
+echo "Installing Bitwarden CLI"
+brew install bitwarden-cli
+echo ""
+# Aptakube
+echo "Installing Aptakube"
+brew install --cask aptakube
+echo ""
+# Discord
+echo "Installing Discord"
+brew install --cask discord
+echo ""
+# ASDF Version Manager
+echo "Installing asdf-vm"
+brew install asdf
+echo ""
+{{ else if eq .chezmoi.os "linux" }}
+# linux
+# Warp Terminal
+echo "Installing Warp Terminal"
+# https://www.warp.dev/download
+# Create a tools directory in my home Downloads directory
+mkdir -p "${HOME}/Downloads/Tools"
+cd "${HOME}/Downloads/Tools"
+# Download the .deb file
+wget "https://app.warp.dev/get_warp?package=deb" --output-document="warp.deb"
+# Install the package
+sudo dpkg -i "warp.deb"
+echo ""
+# VS Code
+echo "Installing VS Code"
+# https://code.visualstudio.com/docs/setup/linux
+# Download the .deb file
+wget "https://go.microsoft.com/fwlink/?LinkID=760868" --output-document="vscode.deb"
+# Install the package
+sudo dpkg -i "vscode.deb"
+# or try snap: sudo snap install code --classic
+echo ""
+# Meld
+echo "Meld ..."
+echo "Since meld is no longer available for macOS, consider SemanticDiff in VS Code"
+echo ""
+# Slack
+echo "Installing Slack"
+sudo snap install slack
+echo ""
+# Vivaldi browser
+echo "Installing Vivaldi"
+sudo snap install vivaldi
+echo ""
+# Bitwarden GUI
+echo "Installing Bitwarden (GUI)"
+sudo snap install bitwarden
+echo ""
+# Bitwarden CLI
+echo "Installing Bitwarden CLI"
+sudo snap install bw
+echo ""
+# Aptakube
+echo "Opening Aptakube.com for download"
+xdg-open https://aptakube.com
+echo ""
+# Discord
+echo "Installing Discord"
+sudo snap install discord
+echo ""
+# Espanso - Text Expander alternative to features built in to macOS
+echo "Installing Espanso"
+sudo snap install espanso --classic
+echo ""
+{{ end }}
