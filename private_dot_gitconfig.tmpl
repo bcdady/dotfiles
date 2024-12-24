@@ -66,15 +66,17 @@
 
 [user]
   [credential]
+	helper = cache
   # https://learn.microsoft.com/en-us/azure/devops/repos/git/git-config?view=azure-devops&tabs=git-command-line#credential-helper
-	helper = store
+  # helper = store
 [init]
 	defaultBranch = main
-# [pull]
-#   # https://github.com/git/git/commit/66713ef3b00933755cdeff1ae823dda7b5843640
-# 	rebase = preserve
+[pull]
+# https://github.com/git/git/commit/66713ef3b00933755cdeff1ae823dda7b5843640
+	rebase = preserve
 [core]
   # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+  # On Linux, use "input"
 	autocrlf = input
 [diff]
   # Also: EDITOR is probably set in env
