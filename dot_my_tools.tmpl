@@ -2,7 +2,7 @@
 #!/bin/zsh
 {{ else if eq .chezmoi.os "linux" }}
 # linux
-#!/usr/bin/bash
+#!/bin/bash
 {{ end }}
 echo "Starting '${0}'"
 
@@ -53,7 +53,7 @@ echo ''
 echo 'Current python version:'
 asdf current python
 # Make sure python pip is up to date
-# echo 'Upgrade PIP'
+echo 'Upgrade PIP'
 command -v python3 && python3 -m pip install --user --upgrade pip
 
 echo ''
@@ -98,10 +98,10 @@ function getconfig() {
 }
 
 # Enable kubectl autocomplete
-# complete -o default -C $(kubectl completion bash) -F __start_kubectl kubectl
-# complete -o default -F __start_kubectl k
+command -v kubectl && complete -o default -C $(kubectl completion bash) -F __start_kubectl kubectl
+command -v kubectl && complete -o default -F __start_kubectl k
 
-test "$TERM_PROGRAM" = "WarpTerminal" || source <(kubectl completion bash)
+test "$TERM_PROGRAM" = "WarpTerminal" || command -v kubectl && source <(kubectl completion bash)
 
 # Enable terraform autocomplete
-complete -C "$(asdf which terraform)" terraform
+command -v terraform && complete -C "$(asdf which terraform)" terraform

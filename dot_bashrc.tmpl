@@ -84,19 +84,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-if [ -f ~/.bash_env ]; then
-    . ~/.bash_env
+if [ -f ~/.my_env ]; then
+    . ~/.my_env
 fi
 
-if [ -f ~/.bash_tools ]; then
-    . ~/.bash_tools
+if [ -f ~/.my_tools ]; then
+    . ~/.my_tools
 fi
 
 # Alias definitions.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f ~/.my_aliases ]; then
+    . ~/.my_aliases
 fi
 
 # If not running interactively, don't do anything

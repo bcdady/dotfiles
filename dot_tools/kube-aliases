@@ -1,4 +1,4 @@
-#!${SHELL}
+#!/bin/bash
 echo "Starting ${0}"
 
 alias k='kubectl'
