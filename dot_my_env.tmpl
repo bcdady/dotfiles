@@ -1,9 +1,9 @@
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 #!/bin/zsh
-{{ else if eq .chezmoi.os "linux" }}
+{{- else if eq .chezmoi.os "linux" }}
 # linux
-#!/usr/bin/bash
-{{ end }}
+#!/bin/bash
+{{- end }}
 echo "Starting '${0}'"
 
 # ensure go path is defined, and also add GOPATH/bin in PATH

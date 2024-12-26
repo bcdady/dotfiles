@@ -1,14 +1,14 @@
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 #!/bin/zsh
 
 # Install ASDF for Oh-My-ZSH
 https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/asdf
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-{{ else if eq .chezmoi.os "linux" }}
+{{- else if eq .chezmoi.os "linux" }}
 #!/bin/bash
 
 # Install ASDF from github
 LATEST_VERSION=$(curl -sL https://api.github.com/repos/asdf-vm/asdf/releases/latest | jq -r ".tag_name" | cut -c2-)
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "v${LATEST_VERSION}"
 
-{{ end }}
+{{- end }}

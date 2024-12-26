@@ -1,9 +1,9 @@
 #!/bin/bash
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 # Install Homebrew
 # https://brew.sh/
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-{{ else if eq .chezmoi.os "linux" }}
+{{- else if eq .chezmoi.os "linux" }}
 echo "Detected Linux; Installing snapd"
 # This may need to be reconsidered, if it turns out to be unsafe
 # to install snapd on a system that already has it
@@ -11,4 +11,4 @@ echo "Updating APT"
 sudo apt update
 echo "Installing snapd"
 sudo apt install snapd
-{{ end }}
+{{- end }}
