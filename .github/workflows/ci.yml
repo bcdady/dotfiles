@@ -3,6 +3,9 @@ name: Release project
 
 # Controls when the workflow will run
 on:
+  push:
+    branches:
+      - main
   # Triggers the workflow on push or pull request events but only for the "main" branch
   pull_request:
     branches: [ "main" ]
@@ -22,3 +25,5 @@ jobs:
 
       - name: Release
         uses: huggingface/semver-release-action@v1.1.0
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN_BCDADY_PUSH }}
