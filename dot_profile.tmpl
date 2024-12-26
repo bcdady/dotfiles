@@ -9,19 +9,16 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-{{ if eq .chezmoi.os "darwin" }}
-
+{{- if eq .chezmoi.os "darwin" }}
 # if running zsh
 if [ -n "$ZSH_VERSION" ]; then
-    # include .bashrc if it exists
+    # include .zhrc if it exists
     if [ -f "$HOME/.zshrc" ]; then
         echo "Sourcing ${HOME}/.zshrc"
         . "$HOME/.zshrc"
     fi
 fi
-
-{{ else if eq .chezmoi.os "linux" }}
-
+{{- else if eq .chezmoi.os "linux" }}
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
@@ -30,9 +27,7 @@ if [ -n "$BASH_VERSION" ]; then
         . "$HOME/.bashrc"
     fi
 fi
-
-{{ end }}
-
+{{- end }}
 
 # set PATH so it includes user's bin if it exists
 if [ -d "$HOME/bin" ]; then
@@ -44,12 +39,9 @@ if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-{{ if eq .chezmoi.os "darwin" }}
-
+{{- if eq .chezmoi.os "darwin" }}
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-
-{{ end }}
-
+{{- end }}
 # load cargo env, if it exists
 if [ -f "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
