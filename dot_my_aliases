@@ -11,6 +11,9 @@ alias la='ls -A'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# bw node error message workaround
+https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
+alias bw='NODE_OPTIONS="--no-deprecation" bw'
 alias ping='ping -c 3'
 alias mkdir='mkdir -p'
 
@@ -21,7 +24,17 @@ alias date='date +%y-%m-%d'
 # redefine find to exclude hidden dirs by default
 alias find='f(){ find "$@" -not -path "*/\.*";  unset -f f; }; f'
 
+#for mac:
+alias setdns='networksetup -setdnsservers Wi-Fi 1.1.1.1'
+alias cleardns='networksetup -setdnsservers Wi-Fi empty'
+
+# various aliases borrowed from Ben
+alias myip='ipconfig getifaddr en0'
+alias ipconfig='ipconfig getifaddr en0'
+
+#for linux:
 #alias showdns='resolvectl status'
+
 alias showdns='resolvectl dns wlo1'
 alias flushdns='resolvectl flush-caches'
 
@@ -47,8 +60,9 @@ alias mrwip='glab mr --message "WIP" --remove_source_branch --squash --target $(
 
 # ECR login
 alias docker=podman
-# aws --profile subsplash ecr get-login-password
-alias ecr-login='aws ecr get-login-password --region $AWS_REGION | podman login $ECR_URL --username AWS --password-stdin'
+alias ecr-login='aws ecr get-login-password --region $AWS_REGION | docker login $ECR_URL --username AWS --password-stdin'
 
-# kubernetes
+# kubernetes-specific aliases
 source .tools/kube-aliases
+
+alias tf='terraform'
