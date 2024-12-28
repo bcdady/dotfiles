@@ -81,8 +81,8 @@
 [diff]
   # Also: EDITOR is probably set in env
 {{- if eq .chezmoi.os "darwin" }}
-	guitool = code -r
-	tool =  code -rmeld
+	guitool = code -d
+	tool =  code -d
 {{- else if eq .chezmoi.os "linux" }}
 	guitool = meld
 	tool = meld
