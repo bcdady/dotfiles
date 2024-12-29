@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting '${0}'" # echo "${1}" # echo "3_aliases"
+echo "Starting .my_aliases"
 
 # shell aliases for bash are also in .bash_it/aliases/available
 

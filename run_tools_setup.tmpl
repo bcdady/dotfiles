@@ -1,8 +1,7 @@
-#!${SHELL}
-# Configure git global settings
-echo "Starting ${0}"
-echo ""
 #!/bin/bash
+# Configure git global settings
+echo "Starting tools_setup"
+echo ""
 {{ if eq .chezmoi.os "darwin" }}
 echo "Detected MacOS ..."
 # Warp Terminal
