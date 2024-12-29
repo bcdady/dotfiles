@@ -1,9 +1,4 @@
-{{- if eq .chezmoi.os "darwin" }}
-#!/bin/zsh
-{{- else if eq .chezmoi.os "linux" }}
-# linux
 #!/bin/bash
-{{- end }}
 echo "Starting .my_tools"
 
 {{- if eq .chezmoi.os "linux" }}
@@ -34,13 +29,52 @@ fi
 # shellcheck disable=SC1091
 [[ -f "${HOME}/.asdf/completions/asdf.bash" ]] && source "${HOME}/.asdf/completions/asdf.bash"
 
-# turn on git cli completion
+# In ~/.tools/asdf_update, no more than once daily, asdf commands are run
+[[ -f "${HOME}/.tools/asdf_update" ]] && source "${HOME}/.tools/asdf_update" || echo "No asdf maintenance script found"
+
+# In ../tools/homebrew, no more than once daily, brew commands are run
+[[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew" || echo "No homebrew maintenance script found"
+
+# turn on git cli completion, if not already provided in Warp terminal
 # shellcheck disable=SC1091
 test "$TERM_PROGRAM" = "WarpTerminal" || source /usr/share/bash-completion/completions/git
 
 # aws cli autocomplete, with aws installed via asdf
 test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(asdf which aws | sed 's/bin\/aws/bin\/aws_completer/')" aws
 
+# create jwt-decode tool / function
+jwt-decode() {
+  jq -R 'split(".") |.[0:2] | map(@base64d) | map(fromjson)' <<< $1
+}
+
+# bw node error message workaround
+https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
+alias bw='NODE_OPTIONS="--no-deprecation" bw'
+
+# Login to bitwarden CLI
+test $(command -v bw) && {
+    BW_STATUS=$(bw status | jq .status)
+    printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
+
+    "${BW_STATUS}" | grep -c "unauthenticated" >/dev/null 2>&1 && {
+        echo ''
+        echo 'Bitwarden Login'
+        bw login
+    }
+
+    # bw status | grep -c "unlocked" >/dev/null 2>&1 || {
+    test -e BW_SESSION || {
+        echo ''
+        echo 'Unlocking Bitwarden vault'
+        echo '!!!'
+        bw unlock # --passwordenv bwpswd | grep -B1 export
+        echo '!!!'
+        echo ''
+        echo 'After setting BW_SESSION, run: `bw status | jq .` to confirm vault is unlocked'
+    }
+}
+
+echo ''
 {{- if eq .chezmoi.os "linux" }}
 test "$TERM_PROGRAM" = "WarpTerminal" || test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
 {{- end }}

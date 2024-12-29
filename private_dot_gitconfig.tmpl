@@ -76,8 +76,9 @@
 	rebase = merges
 [core]
   # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
-  # On Linux, use "input"
+  # On mac and Linux, use "input"
 	autocrlf = input
+	editor = code --wait
 [diff]
   # Also: EDITOR is probably set in env
 {{- if eq .chezmoi.os "darwin" }}
