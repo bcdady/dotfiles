@@ -22,12 +22,15 @@ export EDITOR="code -r"
 #OpenAI key, used by gptcommit
 export OPENAI_API_KEY="sk-DO NOT COMMIT SECRETS"
 
+# Make sure aqua is in PATH
+export PATH=${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
+
 # AWS CLI
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
 export AWS_DEFAULT_REGION='us-west-2'
 # See also "aws cli autocomplete" in ./2_tools
 export AWS_CLI_AUTO_PROMPT='on-partial'
-export AWS_PROFILE='prod-admin'
+export AWS_PROFILE='prod'
 export AWS_RETRY_MODE='adaptive'
 
 # Krew

@@ -3,116 +3,200 @@
 echo "Starting tools_setup"
 echo ""
 {{ if eq .chezmoi.os "darwin" }}
-echo "Detected MacOS ..."
+# MacOS"
+# if the command is not yet available, install via Homebrew
 # Warp Terminal
-echo "Installing Warp Terminal"
-brew install --cask warp
-echo ""
+command -v git || (
+  echo "Installing git"
+  brew install git
+  echo ""
+)
+command -v warp-terminal || (
+  echo "Installing Warp Terminal"
+  brew install --cask warp
+  echo ""
+)
 # VS Code
-echo "Installing VS Code"
-
-echo ""
+command -v code || (
+  echo "Installing VS Code"
+  brew install --cask visual-studio-code
+  echo ""
+)
+# TLDR
+command -v TLDR || (
+  echo "Installing TLDR"
+  brew install tldr
+  echo ""
+)
 # Meld
-# -- since meld is no longer available for macOS,
-# consider SemanticDiff in VS Code
+command -v meld || (
+  echo "Installing Meld"
+  brew install --cask dehesselle-meld
+  # also consider SemanticDiff in VS Code
+  echo ""
+)
 # Slack
-echo "Installing Slack"
-brew install --cask slack
-echo ""
+command -v slack || (
+  echo "Installing Slack"
+  brew install --cask slack
+  echo ""
+)
+# Firefox browser
+command -v firefox || (
+  echo "Installing Firefox"
+  brew install --cask firefox
+  echo ""
+)
 # Vivaldi browser
-echo "Installing Vivaldi"
-brew install --cask vivaldi
-echo ""
+# echo "Installing Vivaldi"
+# brew install --cask vivaldi
+# echo ""
 # Bitwarden GUI
-echo "Installing Bitwarden (GUI)"
-brew install --cask bitwarden
-echo ""
+command -v bitwarden || (
+  echo "Installing Bitwarden (GUI)"
+  brew install --cask bitwarden
+  echo ""
+)
 # Bitwarden CLI
-echo "Installing Bitwarden CLI"
-brew install bitwarden-cli
-echo ""
+command -v bw || (
+  echo "Installing Bitwarden CLI"
+  brew install bitwarden-cli
+  echo ""
+)
 # Aptakube
-echo "Installing Aptakube"
-brew install --cask aptakube
-echo ""
+command -v aptakube || (
+  echo "Installing Aptakube"
+  brew install --cask aptakube
+  echo ""
+)
 # Discord
-echo "Installing Discord"
-brew install --cask discord
-echo ""
+command -v discord || (
+  echo "Installing Discord"
+  brew install --cask discord
+  echo ""
+)
 # ASDF Version Manager
-echo "Installing asdf-vm"
-brew install asdf
-echo ""
+command -v asdf || (
+  echo "Installing asdf-vm"
+  brew install asdf
+  echo ""
+)
 # Aqua CLI Version Manager
-echo "Aqua"
-curl -sSfL -O https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.0.1/aqua-installer
-echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
-chmod +x aqua-installer
-./aqua-installer
-echo ""
-{{ else if eq .chezmoi.os "linux" }}
+command -v aqua || (
+  echo "Aqua"
+  curl -sSfL -O https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.1.1/ aqua-installer
+  echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
+  chmod +x aqua-installer
+  ./aqua-installer
+  echo ""
+)
+command -v task || (
+  echo "Taskfile"
+  brew install go-task
+  echo ""
+)
+{{- else if eq .chezmoi.os "linux" }}
 # linux
-# Warp Terminal
-echo "Installing Warp Terminal"
-# https://www.warp.dev/download
 # Create a tools directory in my home Downloads directory
 mkdir -p "${HOME}/Downloads/Tools"
-cd "${HOME}/Downloads/Tools"
-# Download the .deb file
-wget "https://app.warp.dev/get_warp?package=deb" --output-document="warp.deb"
-# Install the package
-sudo dpkg -i "warp.deb"
-echo ""
+cd "${HOME}/Downloads/Tools" || return
+# if the command is not yet available, download the .deb file and install the package
+command -v git || (
+  echo "Installing git"
+  sudo apt install git-all
+  echo ""
+)
+# Warp Terminal
+# https://www.warp.dev/download
+command -v warp-terminal || (
+  wget "https://app.warp.dev/get_warp?package=deb" --output-document="warp.deb"
+  sudo dpkg -i "warp.deb"
+  echo ""
+)
 # VS Code
-echo "Installing VS Code"
 # https://code.visualstudio.com/docs/setup/linux
-# Download the .deb file
-wget "https://go.microsoft.com/fwlink/?LinkID=760868" --output-document="vscode.deb"
-# Install the package
-sudo dpkg -i "vscode.deb"
 # or try snap: sudo snap install code --classic
-echo ""
+command -v code || (
+  wget "https://go.microsoft.com/fwlink/?LinkID=760868" --output-document="vscode.deb"
+  sudo dpkg -i "vscode.deb"
+  echo ""
+)
+# TLDR
+command -v tldr || (
+  echo "Installing TLDR"
+  sudo snap install tldr
+  echo ""
+)
 # Meld
 echo "Meld ..."
 echo "Since meld is no longer available for macOS, consider SemanticDiff in VS Code"
 echo ""
 # Slack
-echo "Installing Slack"
-sudo snap install slack
-echo ""
+command -v slack || (
+  echo "Installing Slack"
+  sudo snap install slack
+  echo ""
+)
 # Vivaldi browser
-echo "Installing Vivaldi"
-sudo snap install vivaldi
-echo ""
+# echo "Installing Vivaldi"
+# sudo snap install vivaldi
+# echo ""
 # Bitwarden GUI
-echo "Installing Bitwarden (GUI)"
-sudo snap install bitwarden
-echo ""
+command -v bitwarden || (
+  echo "Installing Bitwarden (GUI)"
+  sudo snap install bitwarden
+  echo ""
+)
 # Bitwarden CLI
-echo "Installing Bitwarden CLI"
-sudo snap install bw
-echo ""
+command -v bw || (
+  echo "Installing Bitwarden CLI"
+  sudo snap install bw
+  echo ""
+)
 # Aptakube
-echo "Opening Aptakube.com for download"
-xdg-open https://aptakube.com
-echo ""
+command -v aptakube || (
+  #   echo "Opening Aptakube.com for download"
+  # xdg-open https://aptakube.com
+
+  curl -sSfL -O
+  wget "https://github.com/aptakube/aptakube/releases/download/1.10.4/aptakube_1.10.4_amd64.deb" --output-document="aptakube.deb"
+  sudo dpkg -i "aptakube.deb"
+  echo ""
+)
 # Discord
-echo "Installing Discord"
-sudo snap install discord
-echo ""
+command -v discord || (
+  echo "Installing Discord"
+  sudo snap install discord
+  echo ""
+)
 # Espanso - Text Expander alternative to features built in to macOS
-echo "Installing Espanso"
-sudo snap install espanso --classic
-echo ""
+command -v espanso || (
+  echo "Installing Espanso"
+  sudo snap install espanso --classic
+  echo ""
+)
 # ASDF Version Manager
-echo "Installing asdf-vm"
-brew install asdf
-echo ""
+command -v asdf || (
+  echo "Installing asdf-vm"
+  brew install asdf
+  echo ""
+)
 # Aqua CLI Version Manager
-echo "Aqua"
-curl -sSfL -O https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.0.1/aqua-installer
-echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
-chmod +x aqua-installer
-./aqua-installer
+command -v aqua || (
+  echo "downloading and installing Aqua"
+  curl -sSfL -O https://raw.githubusercontent.com/aquaproj/Aqua-installer/v3.1.1/aqua-installer
+  echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
+  chmod +x aqua-installer
+  ./aqua-installer
+  export PATH=${AQUA_ROOT0_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
+)
+echo "Installing packages listed in ~/aqua.yaml"
+aqua install
 echo ""
-{{ end }}
+# Taskfile
+command -v task || (
+  echo "Taskfile"
+  sudo snap install task --classic
+  echo ""
+)
+{{- end }}
