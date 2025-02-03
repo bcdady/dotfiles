@@ -66,24 +66,26 @@
 
 [user]
 	name = Bryan Dady
+	email = {{ (bitwarden "item" "github.com").login.username }}
+
 [credential]
-  # https://learn.microsoft.com/en-us/azure/devops/repos/git/git-config?view=azure-devops&tabs=git-command-line#credential-helper
-  	helper = store
+	# https://learn.microsoft.com/en-us/azure/devops/repos/git/git-config?view=azure-devops&tabs=git-command-line#credential-helper
+	helper = store
 [init]
 	defaultBranch = main
 [pull]
 # https://github.com/git/git/commit/66713ef3b00933755cdeff1ae823dda7b5843640
 	rebase = merges
 [core]
-  # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
-  # On mac and Linux, use "input"
+	# https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+	# On mac and Linux, use "input"
 	autocrlf = input
 	editor = code --wait
 [diff]
-  # Also: EDITOR is probably set in env
+	# Also: EDITOR is probably set in env
 {{- if eq .chezmoi.os "darwin" }}
 	guitool = code -d
-	tool =  code -d
+	tool = code -d
 {{- else if eq .chezmoi.os "linux" }}
 	guitool = meld
 	tool = meld
@@ -96,8 +98,8 @@
 [fetch]
 	prune = true
 [http]
-  # for macOS, this should maybe be updated to openssl
-  # for Windows, this should be updated to schannel
+	# for macOS, this should maybe be updated to openssl
+	# for Windows, this should be updated to schannel
 {{- if eq .chezmoi.os "darwin" }}
 	sslBackend = openssl
 {{- else if eq .chezmoi.os "linux" }}
