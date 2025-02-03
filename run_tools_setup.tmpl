@@ -6,6 +6,11 @@ echo ""
 # MacOS"
 # if the command is not yet available, install via Homebrew
 # Warp Terminal
+command -v git || (
+  echo "Installing git"
+  brew install git
+  echo ""
+)
 command -v warp-terminal || (
   echo "Installing Warp Terminal"
   brew install --cask warp
@@ -94,8 +99,13 @@ command -v task || (
 # linux
 # Create a tools directory in my home Downloads directory
 mkdir -p "${HOME}/Downloads/Tools"
-cd "${HOME}/Downloads/Tools"
+cd "${HOME}/Downloads/Tools" || return
 # if the command is not yet available, download the .deb file and install the package
+command -v git || (
+  echo "Installing git"
+  sudo apt install git-all
+  echo ""
+)
 # Warp Terminal
 # https://www.warp.dev/download
 command -v warp-terminal || (
@@ -166,9 +176,11 @@ command -v espanso || (
   echo ""
 )
 # ASDF Version Manager
-# echo "Installing asdf-vm"
-# brew install asdf
-# echo ""
+command -v asdf || (
+  echo "Installing asdf-vm"
+  brew install asdf
+  echo ""
+)
 # Aqua CLI Version Manager
 command -v aqua || (
   echo "downloading and installing Aqua"
@@ -176,11 +188,12 @@ command -v aqua || (
   echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
   chmod +x aqua-installer
   ./aqua-installer
-  export PATH=${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
-  echo "installing packages listed in ~/aqua.yaml"
-  aqua install
-  echo ""
+  export PATH=${AQUA_ROOT0_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
 )
+echo "Installing packages listed in ~/aqua.yaml"
+aqua install
+echo ""
+# Taskfile
 command -v task || (
   echo "Taskfile"
   sudo snap install task --classic
