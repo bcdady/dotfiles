@@ -66,7 +66,14 @@
 
 [user]
 	name = Bryan Dady
-	email = {{ (bitwarden "item" "github.com").login.username }}
+
+# default to work config
+[include]
+  path = ~/.gitconfig.work
+
+# when working on personal projects
+[includeIf "gitdir:**/github/bcdady/**/.git"]
+  path = ~/.gitconfig.personal
 
 [credential]
 	# https://learn.microsoft.com/en-us/azure/devops/repos/git/git-config?view=azure-devops&tabs=git-command-line#credential-helper
