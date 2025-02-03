@@ -6,57 +6,90 @@ echo ""
 # MacOS"
 # if the command is not yet available, install via Homebrew
 # Warp Terminal
-echo "Installing Warp Terminal"
-brew install --cask warp
-echo ""
+command -v warp-terminal || (
+  echo "Installing Warp Terminal"
+  brew install --cask warp
+  echo ""
+)
 # VS Code
-echo "Need to add Install step for VS Code"
+command -v code || (
+  echo "Installing VS Code"
+  brew install --cask visual-studio-code
+  echo ""
+)
 # TLDR
-echo "Need to add Install step for TLDR"
-
-echo ""
+command -v TLDR || (
+  echo "Installing TLDR"
+  brew install tldr
+  echo ""
+)
 # Meld
-# -- since meld is no longer available for macOS,
-# consider SemanticDiff in VS Code
+command -v meld || (
+  echo "Installing Meld"
+  brew install --cask dehesselle-meld
+  # also consider SemanticDiff in VS Code
+  echo ""
+)
 # Slack
-echo "Installing Slack"
-brew install --cask slack
-echo ""
+command -v slack || (
+  echo "Installing Slack"
+  brew install --cask slack
+  echo ""
+)
 # Firefox browser
-echo "Installing Firefox"
-brew install --cask firefox
-echo ""
+command -v firefox || (
+  echo "Installing Firefox"
+  brew install --cask firefox
+  echo ""
+)
 # Vivaldi browser
 # echo "Installing Vivaldi"
 # brew install --cask vivaldi
 # echo ""
 # Bitwarden GUI
-echo "Installing Bitwarden (GUI)"
-brew install --cask bitwarden
-echo ""
+command -v bitwarden || (
+  echo "Installing Bitwarden (GUI)"
+  brew install --cask bitwarden
+  echo ""
+)
 # Bitwarden CLI
-echo "Installing Bitwarden CLI"
-brew install bitwarden-cli
-echo ""
+command -v bw || (
+  echo "Installing Bitwarden CLI"
+  brew install bitwarden-cli
+  echo ""
+)
 # Aptakube
-echo "Installing Aptakube"
-brew install --cask aptakube
-echo ""
+command -v aptakube || (
+  echo "Installing Aptakube"
+  brew install --cask aptakube
+  echo ""
+)
 # Discord
-echo "Installing Discord"
-brew install --cask discord
-echo ""
+command -v discord || (
+  echo "Installing Discord"
+  brew install --cask discord
+  echo ""
+)
 # ASDF Version Manager
-echo "Installing asdf-vm"
-brew install asdf
-echo ""
+command -v asdf || (
+  echo "Installing asdf-vm"
+  brew install asdf
+  echo ""
+)
 # Aqua CLI Version Manager
-echo "Aqua"
-curl -sSfL -O https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.1.1/ aqua-installer
-echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
-chmod +x aqua-installer
-./aqua-installer
-echo ""
+command -v aqua || (
+  echo "Aqua"
+  curl -sSfL -O https://raw.githubusercontent.com/aquaproj/aqua-installer/v3.1.1/ aqua-installer
+  echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
+  chmod +x aqua-installer
+  ./aqua-installer
+  echo ""
+)
+command -v task || (
+  echo "Taskfile"
+  brew install go-task
+  echo ""
+)
 {{- else if eq .chezmoi.os "linux" }}
 # linux
 # Create a tools directory in my home Downloads directory
@@ -146,6 +179,11 @@ command -v aqua || (
   export PATH=${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
   echo "installing packages listed in ~/aqua.yaml"
   aqua install
+  echo ""
+)
+command -v task || (
+  echo "Taskfile"
+  brew install go-task
   echo ""
 )
 {{- end }}
