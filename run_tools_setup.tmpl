@@ -200,3 +200,5 @@ command -v task || (
   echo ""
 )
 {{- end }}
+# Ensure Python and PIP are up to date
+python3 -m pip install --upgrade pip setuptools wheel

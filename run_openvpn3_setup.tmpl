@@ -1,0 +1,28 @@
+#!/bin/bash
+{{- if eq .chezmoi.os "darwin" }}
+# Check if OpenVPN Connect is setup
+if [[ -d "/Applications/OpenVPN Connect.app" ]]; then
+    echo ' OpenVPN Connect is installed.'
+else
+    echo 'Starting OpenVPN Connect setup'
+    echo ''
+    wget "https://openvpn.net/downloads/openvpn-connect-v3-macos.dmg" --output-document="$HOME/Downloads/openvpn-connect-v3-macos.dmg"
+    open "$HOME/Downloads/openvpn-connect-v3-macos.dmg" # does this wait?
+    open -a "/Applications/OpenVPN Connect.app"
+fi
+{{- else if eq .chezmoi.os "linux" }}
+# Check if OpenVPN3 client is setup
+command -v openvpn3 || (
+    echo 'Starting OpenVPN3 setup'
+    echo ''
+    # Install packages and dependencies for OpenVPN3 client
+    # https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux
+    apt install apt-transport-https
+    curl -fsSL https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub | gpg --dearmor >/etc/apt/trusted.gpg.d/openvpn-repo-pkg-keyring.gpg
+    # Add openvpn3-jammy to sources list
+    curl -fsSL https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-jammy.list >/etc/apt/sources.list.d/openvpn3.list
+    apt update && apt install openvpn3
+    # Confirm openvpn3 client can run
+    openvpn3 configs-list
+)
+{{- end}}
