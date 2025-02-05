@@ -90,6 +90,14 @@ command -v aqua || (
   ./aqua-installer
   echo ""
 )
+# If aqua installed correctly, use it to install more tools
+command -v aqua &>/dev/null && (
+  echo ""
+  echo "Installing tools listed in ~/aqua.yaml"
+  aqua install
+  echo ""
+)
+# Taskfile
 command -v task || (
   echo "Taskfile"
   brew install go-task
@@ -187,7 +195,7 @@ command -v aqua || (
   export PATH=${AQUA_ROOT0_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
 )
 # If aqua installed correctly, use it to install more tools
-command -v aqua && (
+command -v aqua &>/dev/null && (
   echo ""
   echo "Installing tools listed in ~/aqua.yaml"
   aqua install
