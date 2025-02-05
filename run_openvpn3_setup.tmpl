@@ -25,10 +25,13 @@ command -v openvpn3 || (
 )
 command -v openvpn3 && (
     # Confirm openvpn3 client can run
-    test -f ~/bryan_subsplash_pdx.cfg && openvpn3 config-import --config ~/bryan_subsplash_pdx.cfg || echo '[ERROR] ~/bryan_subsplash_pdx.cfg not found'
-    test -f ~/bryan_subsplash_sfo.cfg && openvpn3 config-import --config ~/bryan_subsplash_sfo.cfg || echo '[ERROR] ~/bryan_subsplash_sfo.cfg not found'
-    echo 'openvpn3 configs-list'
-    echo ''
-    openvpn3 configs-list
+    profile_installed=$(openvpn3 config-manage -c subsplash_pdx -s | wc --lines)
+    if [[ $profile_installed == 0 ]]; then
+        test -f ~/bryan_subsplash_pdx.cfg && openvpn3 config-import --config ~/bryan_subsplash_pdx.cfg --name subsplash_pdx --persistent || echo '[ERROR] ~/bryan_subsplash_pdx.cfg not found'
+        test -f ~/bryan_subsplash_sfo.cfg && openvpn3 config-import --config ~/bryan_subsplash_sfo.cfg --name subsplash_sfo --persistent || echo '[ERROR] ~/bryan_subsplash_sfo.cfg not found'
+        echo 'openvpn3 configs-list'
+        echo ''
+        openvpn3 configs-list
+    fi
 )
 {{- end}}

@@ -102,7 +102,7 @@ echo ''
 # OpenVPN CLI
 # shellcheck disable=SC2139
 alias vpn="$(command -v openvpn3)"
-vpnprofile='subsplash'
+vpnprofile='subsplash_pdx' # there's also 'subsplash_sfo' available
 alias vpnc='vpn session-start -c $vpnprofile &> /dev/null && vpn sessions-list'
 alias vpnd='vpn session-manage -D --config $vpnprofile' # $(vpn sessions-list | grep Path | head -n 1 | cut -d ":" -f2 | tr -d [:space:])'
 alias vpns='vpn sessions-list'
