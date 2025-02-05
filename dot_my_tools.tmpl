@@ -29,6 +29,11 @@ fi
 # shellcheck disable=SC1091
 [[ -f "${HOME}/.asdf/completions/asdf.bash" ]] && source "${HOME}/.asdf/completions/asdf.bash"
 
+# https://aquaproj.github.io/docs/reference/config/shell-completion
+if command -v aqua &>/dev/null; then
+  eval "$(aqua completion bash)"
+fi
+
 # In ~/.tools/asdf_update, no more than once daily, asdf commands are run
 [[ -f "${HOME}/.tools/asdf_update" ]] && source "${HOME}/.tools/asdf_update" || echo "No asdf maintenance script found"
 
@@ -44,7 +49,7 @@ test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(asdf which aws | sed 's/
 
 # create jwt-decode tool / function
 jwt-decode() {
-  jq -R 'split(".") |.[0:2] | map(@base64d) | map(fromjson)' <<< $1
+  jq -R 'split(".") |.[0:2] | map(@base64d) | map(fromjson)' <<<$1
 }
 
 # bw node error message workaround
@@ -53,25 +58,25 @@ alias bw='NODE_OPTIONS="--no-deprecation" bw'
 
 # Login to bitwarden CLI
 test $(command -v bw) && {
-    BW_STATUS=$(bw status | jq .status)
-    printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
+  BW_STATUS=$(bw status | jq .status)
+  printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
 
-    "${BW_STATUS}" | grep -c "unauthenticated" >/dev/null 2>&1 && {
-        echo ''
-        echo 'Bitwarden Login'
-        bw login
-    }
+  "${BW_STATUS}" | grep -c "unauthenticated" >/dev/null 2>&1 && {
+    echo ''
+    echo 'Bitwarden Login'
+    bw login
+  }
 
-    # bw status | grep -c "unlocked" >/dev/null 2>&1 || {
-    test -e BW_SESSION || {
-        echo ''
-        echo 'Unlocking Bitwarden vault'
-        echo '!!!'
-        bw unlock # --passwordenv bwpswd | grep -B1 export
-        echo '!!!'
-        echo ''
-        echo 'After setting BW_SESSION, run: `bw status | jq .` to confirm vault is unlocked'
-    }
+  # bw status | grep -c "unlocked" >/dev/null 2>&1 || {
+  test -e BW_SESSION || {
+    echo ''
+    echo 'Unlocking Bitwarden vault'
+    echo '!!!'
+    bw unlock # --passwordenv bwpswd | grep -B1 export
+    echo '!!!'
+    echo ''
+    echo 'After setting BW_SESSION, run: `bw status | jq .` to confirm vault is unlocked'
+  }
 }
 
 echo ''
