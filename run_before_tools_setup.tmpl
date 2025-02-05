@@ -109,7 +109,7 @@ command -v git || (
 # Warp Terminal
 # https://www.warp.dev/download
 command -v warp-terminal || (
-  wget "https://app.warp.dev/get_warp?package=deb" --output-document="warp.deb"
+  wget "https://app.warp.dev/download?package=deb" --output-document="warp.deb"
   sudo dpkg -i "warp.deb"
   echo ""
 )
@@ -157,7 +157,6 @@ command -v bw || (
 command -v aptakube || (
   #   echo "Opening Aptakube.com for download"
   # xdg-open https://aptakube.com
-
   curl -sSfL -O
   wget "https://github.com/aptakube/aptakube/releases/download/1.10.4/aptakube_1.10.4_amd64.deb" --output-document="aptakube.deb"
   sudo dpkg -i "aptakube.deb"
@@ -176,23 +175,24 @@ command -v espanso || (
   echo ""
 )
 # ASDF Version Manager
-command -v asdf || (
-  echo "Installing asdf-vm"
-  brew install asdf
-  echo ""
-)
+# see run_asdf_setup.tmpl
+
 # Aqua CLI Version Manager
 command -v aqua || (
-  echo "downloading and installing Aqua"
+  echo "Downloading and installing Aqua"
   curl -sSfL -O https://raw.githubusercontent.com/aquaproj/Aqua-installer/v3.1.1/aqua-installer
-  echo "fb4b3b7d026e5aba1fc478c268e8fbd653e01404c8a8c6284fdba88ae62eda6a  aqua-installer" | sha256sum -c
+  echo "e9d4c99577c6b2ce0b62edf61f089e9b9891af1708e88c6592907d2de66e3714  aqua-installer" | sha256sum -c -
   chmod +x aqua-installer
   ./aqua-installer
   export PATH=${AQUA_ROOT0_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
 )
-echo "Installing packages listed in ~/aqua.yaml"
-aqua install
-echo ""
+# If aqua installed correctly, use it to install more tools
+command -v aqua && (
+  echo ""
+  echo "Installing tools listed in ~/aqua.yaml"
+  aqua install
+  echo ""
+)
 # Taskfile
 command -v task || (
   echo "Taskfile"
@@ -200,5 +200,6 @@ command -v task || (
   echo ""
 )
 {{- end }}
-# Ensure Python and PIP are up to date
-python3 -m pip install --upgrade pip setuptools wheel
+
+# login to bitwarden cli
+test -z $BW_SESSION && bw login
