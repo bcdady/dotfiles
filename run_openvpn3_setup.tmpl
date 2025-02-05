@@ -17,12 +17,18 @@ command -v openvpn3 || (
     echo ''
     # Install packages and dependencies for OpenVPN3 client
     # https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux
-    apt install apt-transport-https
-    curl -fsSL https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub | gpg --dearmor >/etc/apt/trusted.gpg.d/openvpn-repo-pkg-keyring.gpg
+    sudo apt install -y apt-transport-https
+    sudo curl -fsSL https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub | gpg --dearmor >/etc/apt/trusted.gpg.d/openvpn-repo-pkg-keyring.gpg
     # Add openvpn3-jammy to sources list
-    curl -fsSL https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-jammy.list >/etc/apt/sources.list.d/openvpn3.list
-    apt update && apt install openvpn3
+    sudo curl -fsSL https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-jammy.list >/etc/apt/sources.list.d/openvpn3.list
+    sudo apt update && sudo apt install -y openvpn3
+)
+command -v openvpn3 && (
     # Confirm openvpn3 client can run
+    test -f ~/bryan_subsplash_pdx.cfg && openvpn3 config-import --config ~/bryan_subsplash_pdx.cfg || echo '[ERROR] ~/bryan_subsplash_pdx.cfg not found'
+    test -f ~/bryan_subsplash_sfo.cfg && openvpn3 config-import --config ~/bryan_subsplash_sfo.cfg || echo '[ERROR] ~/bryan_subsplash_sfo.cfg not found'
+    echo 'openvpn3 configs-list'
+    echo ''
     openvpn3 configs-list
 )
 {{- end}}
