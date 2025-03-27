@@ -42,29 +42,35 @@ jwt-decode() {
 }
 
 # bw node error message workaround
-https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
+# https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
 alias bw='NODE_OPTIONS="--no-deprecation" bw'
 
 # Login to bitwarden CLI
+test "$(command -v bw)" || (
+  echo 'Bitwarden (bw command) Not Found'
+  exit 51
+)
+
+# if BW_SESSION is Not set, run bw unlock
 test $(command -v bw) && {
   BW_STATUS=$(bw status | jq .status)
   printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
 
-  "${BW_STATUS}" | grep -c "unauthenticated" >/dev/null 2>&1 && {
+  echo "${BW_STATUS}" | grep -c "unlocked" >/dev/null 2>&1 || {
     echo ''
     echo 'Bitwarden Login'
     bw login
   }
 
-  # bw status | grep -c "unlocked" >/dev/null 2>&1 || {
-  test -e BW_SESSION || {
+  # if BW_SESSION is Not set, run bw unlock
+  test -z "$BW_SESSION" && {
     echo ''
     echo 'Unlocking Bitwarden vault'
     echo '!!!'
     bw unlock # --passwordenv bwpswd | grep -B1 export
     echo '!!!'
     echo ''
-    echo 'After setting BW_SESSION, run: `bw status | jq .` to confirm vault is unlocked'
+    echo 'After setting BW_SESSION, run: `bw status | jq .status` to confirm vault is unlocked'
   }
 }
 
@@ -91,7 +97,7 @@ echo ''
 # OpenVPN CLI
 # shellcheck disable=SC2139
 alias vpn="$(command -v openvpn3)"
-vpnprofile='subsplash'
+vpnprofile='subsplash_pdx'
 alias vpnc='vpn session-start -c $vpnprofile &> /dev/null && vpn sessions-list'
 alias vpnd='vpn session-manage -D --config $vpnprofile' # $(vpn sessions-list | grep Path | head -n 1 | cut -d ":" -f2 | tr -d [:space:])'
 alias vpns='vpn sessions-list'
