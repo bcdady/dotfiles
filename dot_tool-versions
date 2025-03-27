@@ -1,7 +1,6 @@
 # ASDF 'global' tool versions
 # Managed via dotbot / my-dotfiles
-ansible-base latest
-awscli 2.22.28
+awscli latest
 bazel 5.2.0
 bitwarden latest
 checkov 3.2.2
