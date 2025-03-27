@@ -1,8 +1,12 @@
 #!/bin/bash
+
+# Exit on error
+set -e
+
 # Configure git global settings
 echo "Starting tools_setup"
 echo ""
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 # MacOS"
 # if the command is not yet available, install via Homebrew
 # Warp Terminal
@@ -181,8 +185,6 @@ command -v espanso || (
 )
 # ASDF Version Manager
 command -v asdf || (
-  echo "Installing asdf-vm"
-  # go install github.com/asdf-vm/asdf/cmd/asdf@latest
   echo "downloading and installing ASDF"
   curl -sSfL -O https://github.com/asdf-vm/asdf/releases/download/v0.16.6/asdf-v0.16.6-linux-amd64.tar.gz
   mkdir -p $HOME/.local/share/asdf
@@ -209,5 +211,3 @@ command -v task || (
   echo ""
 )
 {{- end }}
-# Ensure Python and PIP are up to date
-python3 -m pip install --upgrade pip setuptools wheel
