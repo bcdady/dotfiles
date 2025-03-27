@@ -12,7 +12,7 @@ alias la='ls -A'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # bw node error message workaround
-https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
+# https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
 alias bw='NODE_OPTIONS="--no-deprecation" bw'
 alias ping='ping -c 3'
 alias mkdir='mkdir -p'
@@ -63,6 +63,7 @@ alias docker=podman
 alias ecr-login='aws ecr get-login-password --region $AWS_REGION | docker login $ECR_URL --username AWS --password-stdin'
 
 # kubernetes-specific aliases
-source .tools/kube-aliases
+test -f "${HOME}/.tools/kube-aliases" && . "${HOME}/.tools/kube-aliases" || echo "Error: ${HOME}/.tools/kube-aliases Not found"
 
 alias tf='terraform'
+alias tf-init='terraform init -backend-config='\''assume_role.role_arn=arn:aws:iam::671027463601:role/cicd'\'''
