@@ -90,7 +90,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(asdf git history-substring-search zsh-autosuggestions)
+plugins=(git history-substring-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,8 +99,5 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # Turn off zsh performance profiling
 # zprof
-
-# ASDF
-# source /usr/local/opt/asdf/libexec/asdf.sh
 
 # complete -o nospace -C /Users/bryandady/go/bin/terramate terramate

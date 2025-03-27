@@ -106,6 +106,12 @@ command -v git || (
   sudo apt install git-all
   echo ""
 )
+# Golang
+command -v go || (
+  echo "Installing golang (via Snap)"
+  sudo snap install go --classic
+  echo ""
+)
 # Warp Terminal
 # https://www.warp.dev/download
 command -v warp-terminal || (
@@ -117,8 +123,8 @@ command -v warp-terminal || (
 # https://code.visualstudio.com/docs/setup/linux
 # or try snap: sudo snap install code --classic
 command -v code || (
-  wget "https://go.microsoft.com/fwlink/?LinkID=760868" --output-document="vscode.deb"
-  sudo dpkg -i "vscode.deb"
+  echo "Installing vscode (via Snap)"
+  sudo snap install code --classic
   echo ""
 )
 # TLDR
@@ -157,8 +163,6 @@ command -v bw || (
 command -v aptakube || (
   #   echo "Opening Aptakube.com for download"
   # xdg-open https://aptakube.com
-
-  curl -sSfL -O
   wget "https://github.com/aptakube/aptakube/releases/download/1.10.4/aptakube_1.10.4_amd64.deb" --output-document="aptakube.deb"
   sudo dpkg -i "aptakube.deb"
   echo ""
@@ -178,7 +182,12 @@ command -v espanso || (
 # ASDF Version Manager
 command -v asdf || (
   echo "Installing asdf-vm"
-  brew install asdf
+  # go install github.com/asdf-vm/asdf/cmd/asdf@latest
+  echo "downloading and installing ASDF"
+  curl -sSfL -O https://github.com/asdf-vm/asdf/releases/download/v0.16.6/asdf-v0.16.6-linux-amd64.tar.gz
+  mkdir -p $HOME/.local/share/asdf
+  tar xf asdf-v0.16.6-linux-amd64.tar.gz --directory=$HOME/.local/share/asdf
+  export PATH=$HOME/.local/share/asdf:$PATH
   echo ""
 )
 # Aqua CLI Version Manager

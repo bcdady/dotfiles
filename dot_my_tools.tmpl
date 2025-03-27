@@ -23,12 +23,6 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
 fi
 {{- end }}
 
-# asdf
-# shellcheck disable=SC1091
-[[ -f "${HOME}/.asdf/asdf.sh" ]] && source "${HOME}/.asdf/asdf.sh"
-# shellcheck disable=SC1091
-[[ -f "${HOME}/.asdf/completions/asdf.bash" ]] && source "${HOME}/.asdf/completions/asdf.bash"
-
 # In ~/.tools/asdf_update, no more than once daily, asdf commands are run
 [[ -f "${HOME}/.tools/asdf_update" ]] && source "${HOME}/.tools/asdf_update" || echo "No asdf maintenance script found"
 
@@ -44,34 +38,40 @@ test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(asdf which aws | sed 's/
 
 # create jwt-decode tool / function
 jwt-decode() {
-  jq -R 'split(".") |.[0:2] | map(@base64d) | map(fromjson)' <<< $1
+  jq -R 'split(".") |.[0:2] | map(@base64d) | map(fromjson)' <<<$1
 }
 
 # bw node error message workaround
-https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
+# https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
 alias bw='NODE_OPTIONS="--no-deprecation" bw'
 
 # Login to bitwarden CLI
+test "$(command -v bw)" || (
+  echo 'Bitwarden (bw command) Not Found'
+  exit 51
+)
+
+# if BW_SESSION is Not set, run bw unlock
 test $(command -v bw) && {
-    BW_STATUS=$(bw status | jq .status)
-    printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
+  BW_STATUS=$(bw status | jq .status)
+  printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
 
-    "${BW_STATUS}" | grep -c "unauthenticated" >/dev/null 2>&1 && {
-        echo ''
-        echo 'Bitwarden Login'
-        bw login
-    }
+  echo "${BW_STATUS}" | grep -c "unlocked" >/dev/null 2>&1 || {
+    echo ''
+    echo 'Bitwarden Login'
+    bw login
+  }
 
-    # bw status | grep -c "unlocked" >/dev/null 2>&1 || {
-    test -e BW_SESSION || {
-        echo ''
-        echo 'Unlocking Bitwarden vault'
-        echo '!!!'
-        bw unlock # --passwordenv bwpswd | grep -B1 export
-        echo '!!!'
-        echo ''
-        echo 'After setting BW_SESSION, run: `bw status | jq .` to confirm vault is unlocked'
-    }
+  # if BW_SESSION is Not set, run bw unlock
+  test -z "$BW_SESSION" && {
+    echo ''
+    echo 'Unlocking Bitwarden vault'
+    echo '!!!'
+    bw unlock # --passwordenv bwpswd | grep -B1 export
+    echo '!!!'
+    echo ''
+    echo 'After setting BW_SESSION, run: `bw status | jq .status` to confirm vault is unlocked'
+  }
 }
 
 echo ''
@@ -97,7 +97,7 @@ echo ''
 # OpenVPN CLI
 # shellcheck disable=SC2139
 alias vpn="$(command -v openvpn3)"
-vpnprofile='subsplash'
+vpnprofile='subsplash_pdx'
 alias vpnc='vpn session-start -c $vpnprofile &> /dev/null && vpn sessions-list'
 alias vpnd='vpn session-manage -D --config $vpnprofile' # $(vpn sessions-list | grep Path | head -n 1 | cut -d ":" -f2 | tr -d [:space:])'
 alias vpns='vpn sessions-list'
