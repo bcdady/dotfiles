@@ -11,11 +11,10 @@ export GOPATH="${HOME}/go"
 
 GOBIN="${GOPATH}/bin"
 
-# https://asdf-vm.com/guide/upgrading-to-v0-16
+# Add GOBIN to PATH
 export PATH="$GOBIN:$PATH"
-export PATH=$HOME/.local/share/asdf:$PATH
-export ASDF_DATA_DIR=${HOME}/.asdf
-export PATH="$ASDF_DATA_DIR/shims:$PATH"
+
+# Mise paths handled by mise activate
 
 # AUTH_TOKEN (JWT)
 export AUTH_TOKEN="DO NOT COMMIT SECRETS"
@@ -28,9 +27,6 @@ export EDITOR="code -r"
 #OpenAI key, used by gptcommit
 export OPENAI_API_KEY="sk-DO NOT COMMIT SECRETS"
 
-# Make sure aqua is in PATH
-export PATH=${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
-
 # AWS CLI
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
 export AWS_DEFAULT_REGION='us-west-2'
@@ -42,6 +38,5 @@ export AWS_RETRY_MODE='adaptive'
 # Krew
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
-# Rust (for asdf) config
-# https://github.com/asdf-community/asdf-rust#configuration
+# Rust config (for mise)
 export RUST_WITHOUT=rust-docs
