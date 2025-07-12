@@ -66,4 +66,3 @@ alias ecr-login='aws ecr get-login-password --region $AWS_REGION | docker login 
 test -f "${HOME}/.tools/kube-aliases" && . "${HOME}/.tools/kube-aliases" || echo "Error: ${HOME}/.tools/kube-aliases Not found"
 
 alias tf='terraform'
-alias tf-init='terraform init -backend-config='\''assume_role.role_arn=arn:aws:iam::671027463601:role/cicd'\'''
