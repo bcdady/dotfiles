@@ -23,7 +23,8 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
 fi
 {{- end }}
 
-# Mise (replacement for asdf) is initialized in .bashrc
+# activate mise (replacement for aqua, asdf)
+eval "$(~/.local/bin/mise activate bash)"
 
 # In ../tools/homebrew, no more than once daily, brew commands are run
 [[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew" || echo "No homebrew maintenance script found"
@@ -109,10 +110,12 @@ function getconfig() {
 }
 
 # Enable kubectl autocomplete
-command -v kubectl && complete -o default -C $(kubectl completion bash) -F __start_kubectl kubectl
+echo "Enable kubectl autocomplete"
+command -v kubectl && complete -o default -F __start_kubectl kubectl
+echo "Enable 'k' (alias) autocomplete"
 command -v kubectl && complete -o default -F __start_kubectl k
 
-test "$TERM_PROGRAM" = "WarpTerminal" || command -v kubectl && source <(kubectl completion bash)
+# test "$TERM_PROGRAM" = "WarpTerminal" || command -v kubectl && source <(kubectl completion bash)
 
 # Enable terraform autocomplete
 command -v terraform && complete -C "$(mise which terraform)" terraform
