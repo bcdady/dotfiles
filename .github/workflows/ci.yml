@@ -26,4 +26,4 @@ jobs:
       - name: Release
         uses: huggingface/semver-release-action@v1.1.0
         env:
-          GH_TOKEN: ${{ secrets.TOKEN_BCDADY_PUSH }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_BCDADY_PUSH }}
