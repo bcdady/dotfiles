@@ -7,41 +7,32 @@
 echo "Starting .my_env"
 
 # ensure go path is defined, and also add GOPATH/bin in PATH
-export GOPATH="${HOME}/go"
+# export GOPATH="${HOME}/go"
 
-GOBIN="${GOPATH}/bin"
+# GOBIN="${GOPATH}/bin"
 
-# https://asdf-vm.com/guide/upgrading-to-v0-16
-export PATH="$GOBIN:$PATH"
-export PATH=$HOME/.local/share/asdf:$PATH
-export ASDF_DATA_DIR=${HOME}/.asdf
-export PATH="$ASDF_DATA_DIR/shims:$PATH"
+# Add GOBIN to PATH
+# export PATH="$GOBIN:$PATH"
 
+# Mise paths handled by mise activate
 # AUTH_TOKEN (JWT)
-export AUTH_TOKEN="DO NOT COMMIT SECRETS"
+# export AUTH_TOKEN="DO NOT COMMIT SECRETS"
 
 # GITLAB ACCESS_KEY
-export ACCESS_KEY="DO NOT COMMIT SECRETS"
-export GITLAB_HOST="DO NOT COMMIT SECRETS"
-export EDITOR="code -r"
-
-#OpenAI key, used by gptcommit
-export OPENAI_API_KEY="sk-DO NOT COMMIT SECRETS"
-
-# Make sure aqua is in PATH
-export PATH=${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH
+# export GITLAB_TOKEN="DO NOT COMMIT SECRETS"
+# export GITLAB_HOST="DO NOT COMMIT SECRETS"
+# export EDITOR="code -r"
 
 # AWS CLI
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
-export AWS_DEFAULT_REGION='us-west-2'
+# export AWS_DEFAULT_REGION='us-west-2'
 # See also "aws cli autocomplete" in ./2_tools
-export AWS_CLI_AUTO_PROMPT='on-partial'
-export AWS_PROFILE='prod'
-export AWS_RETRY_MODE='adaptive'
+# export AWS_CLI_AUTO_PROMPT='on-partial'
+# export AWS_PROFILE='prod'
+# export AWS_RETRY_MODE='adaptive'
 
-# Krew
+# Add Krew to PATH
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
-# Rust (for asdf) config
-# https://github.com/asdf-community/asdf-rust#configuration
-export RUST_WITHOUT=rust-docs
+# Rust config (for mise)
+# export RUST_WITHOUT=rust-docs

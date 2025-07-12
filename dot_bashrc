@@ -99,11 +99,6 @@ if [ -f ~/.my_aliases ]; then
     . ~/.my_aliases
 fi
 
-# If not running interactively, don't do anything
-case $- in
-*i*) ;;
-*) return ;;
-esac
-
 # Don't check mail when opening terminal.
 unset MAILCHECK
+

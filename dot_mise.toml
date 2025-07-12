@@ -1,0 +1,52 @@
+[env]
+AWS_CLI_AUTO_PROMPT = 'on-partial'
+AWS_DEFAULT_REGION = 'us-west-2'
+AWS_PROFILE = 'infra'
+AWS_RETRY_MODE = 'adaptive'
+
+EDITOR = "code -r"
+
+GITLAB_TOKEN = "DO NOT COMMIT SECRETS"
+GITLAB_HOST = "DO NOT COMMIT SECRETS"
+
+RUST_WITHOUT = 'rust-docs'
+
+[tools]
+# AWS and Cloud Tools
+awscli = "latest"
+terraform = "prefix:1.12"
+terraform-docs = "prefix:0"
+tflint = "latest"
+vault = "prefix:1"
+
+# Kubernetes Tools
+helm = "prefix:3.16"
+krew = "latest"
+kube-linter = "latest"
+kubectl = "prefix:1.32"
+kubectx = "prefix:0.9"
+kubie = "latest"
+
+# Development Languages
+golang = "prefix:1.24"
+nodejs = "23.5.0"
+python = "prefix:3.12"
+
+# Development Tools
+bazel = "5.2.0"
+bitwarden = "latest"
+checkov = "3.2.2"
+dasel = "2.8.1"
+gitconfig = "latest"
+glab = "latest"
+hadolint = "latest"
+jq = "latest"
+mysql = "prefix:8.0"
+tfsec = "latest"
+yamllint = "latest"
+yarn = "latest"
+
+# Python Tools
+ruff = "latest"
+uv = "latest"
+

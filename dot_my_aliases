@@ -46,7 +46,7 @@ alias resetdns='resolvectl dns wlo1 192.168.1.1 2002:4591:9ab7:0:deef:9ff:feaa:4
 alias ipconfig='ifconfig | grep -E "inet\b"'
 alias myip=ipconfig
 
-# glab cli is expected to be installed via asdf
+# glab cli is expected to be installed via mise
 alias mr='glab mr --labels please-review,assign-sre --remove_source_branch --squash --target $(git rev-parse --abbrev-ref --symbolic-full-name @{u})'
 alias mra='glab mr --labels please-review --remove_source_branch --squash --target $(git rev-parse --abbrev-ref --symbolic-full-name @{u}) --assignee '
 alias mrwip='glab mr --message "WIP" --remove_source_branch --squash --target $(git rev-parse --abbrev-ref --symbolic-full-name @{u})'
@@ -66,4 +66,3 @@ alias ecr-login='aws ecr get-login-password --region $AWS_REGION | docker login 
 test -f "${HOME}/.tools/kube-aliases" && . "${HOME}/.tools/kube-aliases" || echo "Error: ${HOME}/.tools/kube-aliases Not found"
 
 alias tf='terraform'
-alias tf-init='terraform init -backend-config='\''assume_role.role_arn=arn:aws:iam::671027463601:role/cicd'\'''

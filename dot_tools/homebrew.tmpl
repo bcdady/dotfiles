@@ -1,5 +1,12 @@
+{{- if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 echo "$0"
+
+# Check if running on macOS
+if [ "$(uname)" != "Darwin" ]; then
+    echo "Error: This script is intended for macOS" >&2
+    exit 1
+fi
 
 if [ "$1" = "-force" ]; then FORCE_UPDATE=true; fi
 function confirm {
@@ -77,3 +84,4 @@ else
 fi
 # Truncate log to the last 1000 lines
 echo -e "$(tail -1000 "$BREW_STATUS_FILE")" >"$BREW_STATUS_FILE"
+{{- end }}

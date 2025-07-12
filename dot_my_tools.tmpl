@@ -23,8 +23,8 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
 fi
 {{- end }}
 
-# In ~/.tools/asdf_update, no more than once daily, asdf commands are run
-[[ -f "${HOME}/.tools/asdf_update" ]] && source "${HOME}/.tools/asdf_update" || echo "No asdf maintenance script found"
+# activate mise (replacement for aqua, asdf)
+eval "$(~/.local/bin/mise activate bash)"
 
 # In ../tools/homebrew, no more than once daily, brew commands are run
 [[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew" || echo "No homebrew maintenance script found"
@@ -33,8 +33,10 @@ fi
 # shellcheck disable=SC1091
 test "$TERM_PROGRAM" = "WarpTerminal" || source /usr/share/bash-completion/completions/git
 
-# aws cli autocomplete, with aws installed via asdf
-test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(asdf which aws | sed 's/bin\/aws/bin\/aws_completer/')" aws
+# aws cli autocomplete, with aws installed via mise
+if command -v aws >/dev/null 2>&1; then
+  test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(mise which aws)" aws
+fi
 
 # create jwt-decode tool / function
 jwt-decode() {
@@ -45,33 +47,15 @@ jwt-decode() {
 # https://github.com/bitwarden/clients/issues/6689#issuecomment-1787609205
 alias bw='NODE_OPTIONS="--no-deprecation" bw'
 
-# Login to bitwarden CLI
-test "$(command -v bw)" || (
-  echo 'Bitwarden (bw command) Not Found'
-  exit 51
-)
-
-# if BW_SESSION is Not set, run bw unlock
-test $(command -v bw) && {
-  BW_STATUS=$(bw status | jq .status)
-  printf 'Bitwarden Status: %s\n' "${BW_STATUS}"
-
-  echo "${BW_STATUS}" | grep -c "unlocked" >/dev/null 2>&1 || {
-    echo ''
-    echo 'Bitwarden Login'
-    bw login
+# Lazy-load Bitwarden - only check when needed
+bw-check() {
+  test "$(command -v bw)" || {
+    echo 'Bitwarden (bw command) Not Found'
+    return 1
   }
-
-  # if BW_SESSION is Not set, run bw unlock
-  test -z "$BW_SESSION" && {
-    echo ''
-    echo 'Unlocking Bitwarden vault'
-    echo '!!!'
-    bw unlock # --passwordenv bwpswd | grep -B1 export
-    echo '!!!'
-    echo ''
-    echo 'After setting BW_SESSION, run: `bw status | jq .status` to confirm vault is unlocked'
-  }
+  BW_STATUS=$(bw status | jq -r .status 2>/dev/null)
+  echo "Bitwarden Status: ${BW_STATUS}"
+  [[ "$BW_STATUS" == "unlocked" ]] || echo "Run 'bw unlock' to unlock vault"
 }
 
 echo ''
@@ -80,17 +64,17 @@ test "$TERM_PROGRAM" = "WarpTerminal" || test -f ~/.resh/shellrc || curl -fsSL h
 {{- end }}
 
 # list available versions of python
-echo 'Available python (3) versions / updates:'
-asdf list all python | grep -E '^3\.[0-9]{1,3}\.[0-9]{1,3}$' | tail -n 10 # grep -v rc | grep -v dev |
-# check which python is active via asdf
-echo ''
-echo 'Current python version:'
-asdf current python
-# Make sure python pip is up to date
-echo 'Upgrade PIP'
-command -v python3 && python3 -m pip install --user --upgrade pip
+# echo 'Available python (3) versions / updates:'
+# mise ls-remote python | grep -E '^3\.[0-9]{1,3}\.[0-9]{1,3}$' | tail -n 10
+# # check which python is active via mise
+# echo ''
+# echo 'Current python version:'
+# mise current python
+# # Make sure python pip is up to date
+# echo 'Upgrade PIP'
+# command -v python3 && python3 -m pip install --user --upgrade pip
 
-echo ''
+# echo ''
 {{- if eq .chezmoi.os "linux" }}
 # configure vpn aliases for CLI on linux
 
@@ -102,13 +86,7 @@ alias vpnc='vpn session-start -c $vpnprofile &> /dev/null && vpn sessions-list'
 alias vpnd='vpn session-manage -D --config $vpnprofile' # $(vpn sessions-list | grep Path | head -n 1 | cut -d ":" -f2 | tr -d [:space:])'
 alias vpns='vpn sessions-list'
 
-echo ''
-echo 'VPN status:'
-if (openvpn3 sessions-list | grep 'Client connected'); then
-  openvpn3 sessions-list | grep -B1 'Client connected'
-else
-  echo 'No VPN session found. Run `vpnc` to connect'
-fi
+# VPN status check - run 'vpns' to check status
 
 # also, if eq .chezmoi.os "linux"
 # https://starship.rs
@@ -132,10 +110,12 @@ function getconfig() {
 }
 
 # Enable kubectl autocomplete
-command -v kubectl && complete -o default -C $(kubectl completion bash) -F __start_kubectl kubectl
-command -v kubectl && complete -o default -F __start_kubectl k
+(command -v kubectl >/dev/null 2>&1) && {
+  complete -o default -F __start_kubectl kubectl
+  complete -o default -F __start_kubectl k
+}
 
-test "$TERM_PROGRAM" = "WarpTerminal" || command -v kubectl && source <(kubectl completion bash)
+# test "$TERM_PROGRAM" = "WarpTerminal" || command -v kubectl && source <(kubectl completion bash)
 
 # Enable terraform autocomplete
-command -v terraform && complete -C "$(asdf which terraform)" terraform
+(command -v terraform >/dev/null 2>&1) && complete -C "$(mise which terraform)" terraform
