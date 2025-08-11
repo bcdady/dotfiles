@@ -21,7 +21,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Release
         uses: huggingface/semver-release-action@v1.1.0
