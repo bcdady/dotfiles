@@ -84,8 +84,8 @@ alias vpns='vpn sessions-list'
 # VPN status check - run 'vpns' to check status
 
 # Skip starship in Kiro - it manages its own prompt
-if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; then
-  command -v starship || curl -sS https://starship.rs/install.sh | sh
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]] then
+  command -v starship >/dev/null 2>&1 || curl -sS https://starship.rs/install.sh | sh
   eval "$(starship init bash)"
 fi
 {{- end }}
