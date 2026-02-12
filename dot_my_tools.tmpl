@@ -1,24 +1,17 @@
 #!/bin/bash
-echo "Starting .my_tools"
 
 {{- if eq .chezmoi.os "linux" }}
-if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
-  echo 'Configuring shell history'
-  # Set up Shell History
-  # hstr --show-configuration
-  alias hh=hstr                 # hh to be alias for hstr
-  shopt -s histappend           # append new history items to .bash_history
-  export HISTCONTROL=ignoreboth # leading space hides commands from history
-  export HISTFILESIZE=10000     # increase history file size (default is 500)
+# Skip HSTR when using Kiro - it has its own history management
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; then
+  alias hh=hstr
+  shopt -s histappend
+  export HISTCONTROL=ignoreboth
+  export HISTFILESIZE=10000
   export HISTIGNORE='rm *:history*:printenv*'
-  export HISTSIZE=${HISTFILESIZE} # increase history size (default is 500)
-  export HSTR_CONFIG=hicolor      # get more colors
-
-  # ensure synchronization between bash memory and history file
+  export HISTSIZE=${HISTFILESIZE}
+  export HSTR_CONFIG=hicolor
   export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
-  # if this is interactive shell, then bind hstr to Ctrl-r (for Vi mode check doc)
   if [[ $- =~ .*i.* ]]; then bind '"\C-r": "\C-a hstr -- \C-j"'; fi
-  # if this is interactive shell, then bind 'kill last command' to Ctrl-x k
   if [[ $- =~ .*i.* ]]; then bind '"\C-xk": "\C-a hstr -k \C-j"'; fi
 fi
 {{- end }}
@@ -26,8 +19,8 @@ fi
 # activate mise (replacement for aqua, asdf)
 eval "$(~/.local/bin/mise activate bash)"
 
-# In ../tools/homebrew, no more than once daily, brew commands are run
-[[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew" || echo "No homebrew maintenance script found"
+# Skip homebrew maintenance in Kiro to speed up shell startup
+[[ "$TERM_PROGRAM" != "kiro" ]] && [[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew"
 
 # turn on git cli completion, if not already provided in Warp terminal
 # shellcheck disable=SC1091
@@ -58,9 +51,11 @@ bw-check() {
   [[ "$BW_STATUS" == "unlocked" ]] || echo "Run 'bw unlock' to unlock vault"
 }
 
-echo ''
 {{- if eq .chezmoi.os "linux" }}
-test "$TERM_PROGRAM" = "WarpTerminal" || test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
+# Skip RESH in Kiro - it has its own history features
+if [[ "$TERM_PROGRAM" != "kiro" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
+  test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
+fi
 {{- end }}
 
 # list available versions of python
@@ -88,20 +83,17 @@ alias vpns='vpn sessions-list'
 
 # VPN status check - run 'vpns' to check status
 
-# also, if eq .chezmoi.os "linux"
-# https://starship.rs
-if [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
-  echo 'Initializing starship'
-  command -v starship || curl -sS https://starship.rs/install.sh | sh
+# Skip starship in Kiro - it manages its own prompt
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]] then
+  command -v starship >/dev/null 2>&1 || curl -sS https://starship.rs/install.sh | sh
   eval "$(starship init bash)"
 fi
 {{- end }}
 
-# Use AWS CLI to setup kubeconfig if necessary
-if [[ $(grep -c sap-prod ~/.kube/config) -eq 0 ]]; then
-  echo "Updating kubeconfig via aws eks"
-  for cluster in $(aws eks list-clusters --query 'clusters[*]' --output text); do
-    echo "aws eks update-kubeconfig --name ${cluster}"
+# Skip kubeconfig updates in Kiro to speed up shell startup
+if [[ "$TERM_PROGRAM" != "kiro" ]] && [[ $(grep -c sap-prod ~/.kube/config 2>/dev/null || echo 0) -eq 0 ]]; then
+  for cluster in $(aws eks list-clusters --query 'clusters[*]' --output text 2>/dev/null); do
+    aws eks update-kubeconfig --name "${cluster}" >/dev/null 2>&1
   done
 fi
 

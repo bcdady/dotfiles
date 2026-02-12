@@ -1,10 +1,8 @@
 {{- if eq .chezmoi.os "darwin" }}
 #!/bin/zsh
 {{- else if eq .chezmoi.os "linux" }}
-# linux
 #!/bin/bash
 {{- end }}
-echo "Starting .my_env"
 
 # ensure go path is defined, and also add GOPATH/bin in PATH
 # export GOPATH="${HOME}/go"
