@@ -53,7 +53,9 @@ bw-check() {
 
 {{- if eq .chezmoi.os "linux" }}
 # Skip RESH in Kiro - it has its own history features
-[[ "$TERM_PROGRAM" != "kiro" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
+if [[ "$TERM_PROGRAM" != "kiro" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
+  test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
+fi
 {{- end }}
 
 # list available versions of python
