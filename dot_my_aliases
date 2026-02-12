@@ -62,6 +62,6 @@ alias docker=podman
 alias ecr-login='aws ecr get-login-password --region $AWS_REGION | docker login $ECR_URL --username AWS --password-stdin'
 
 # kubernetes-specific aliases
-test -f "${HOME}/.tools/kube-aliases" && . "${HOME}/.tools/kube-aliases" || echo "Error: ${HOME}/.tools/kube-aliases Not found"
+test -f "${HOME}/.tools/kube-aliases" && . "${HOME}/.tools/kube-aliases" 2>/dev/null
 
 alias tf='terraform'

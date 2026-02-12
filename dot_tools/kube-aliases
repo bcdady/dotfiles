@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "Loading kube_aliases"
 
 alias k='kubectl'
 alias kp='k get pods -n $n'

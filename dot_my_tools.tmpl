@@ -28,7 +28,7 @@ test "$TERM_PROGRAM" = "WarpTerminal" || source /usr/share/bash-completion/compl
 
 # aws cli autocomplete, with aws installed via mise
 if command -v aws >/dev/null 2>&1; then
-  test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(mise which aws)" aws
+  test "$TERM_PROGRAM" = "WarpTerminal" || complete -C "$(command -v aws)" aws
 fi
 
 # create jwt-decode tool / function
