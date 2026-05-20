@@ -1,3 +1,8 @@
+{{- $bwStatus := output "sh" "-c" "bw status 2>/dev/null | jq -r .status || echo unauthenticated" | trim -}}
 
 [user]
+{{- if eq $bwStatus "unlocked" }}
 	email = {{ (bitwarden "item" "383dc181-1c2c-4124-bba8-af4300281f82").login.username }}
+{{- else }}
+	# email not set — run 'bw login && bw unlock' then 'chezmoi apply'
+{{- end }}
