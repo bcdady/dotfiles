@@ -84,10 +84,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-if [ -f ~/.my_env ]; then
-    . ~/.my_env
-fi
-
 if [ -f ~/.my_tools ]; then
     . ~/.my_tools
 fi

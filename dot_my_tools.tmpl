@@ -16,6 +16,9 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; t
 fi
 {{- end }}
 
+# Add Krew to PATH
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
 # activate mise (replacement for aqua, asdf)
 eval "$(~/.local/bin/mise activate bash)"
 
