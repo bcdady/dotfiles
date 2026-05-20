@@ -1,14 +1,21 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/zsh
+{{- else if eq .chezmoi.os "linux" -}}
 #!/bin/bash
+{{- end }}
 
-# shell aliases for bash are also in .bash_it/aliases/available
+# shell aliases
 
 alias ll='ls -alF'
 alias lh='ls -lh'
 alias la='ls -A'
 
+{{- if eq .chezmoi.os "linux" }}
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+{{- end }}
 
 alias ping='ping -c 3'
 alias mkdir='mkdir -p'
@@ -17,6 +24,18 @@ alias mkdir='mkdir -p'
 alias datetime='date +%y%m%d-%_H:%M:%S'
 alias date='date +%y-%m-%d'
 
+{{- if eq .chezmoi.os "darwin" }}
+
+# DNS (macOS)
+alias setdns='networksetup -setdnsservers Wi-Fi 1.1.1.1'
+alias cleardns='networksetup -setdnsservers Wi-Fi empty'
+
+alias myip='ipconfig getifaddr en0'
+alias ipconfig='ipconfig getifaddr en0'
+
+{{- else if eq .chezmoi.os "linux" }}
+
+# DNS (Linux)
 alias showdns='resolvectl dns wlo1'
 alias flushdns='resolvectl flush-caches'
 
@@ -27,13 +46,7 @@ alias resetdns='resolvectl dns wlo1 192.168.1.1 2002:4591:9ab7:0:deef:9ff:feaa:4
 
 alias ipconfig='ifconfig | grep -E "inet\b"'
 alias myip=ipconfig
-
-# docker
-# alias docker-clean='docker ps -aq --filter status=dead --filter status=exited | xargs docker rm -v'
-
-# alias dockerstart='systemctl --user start docker --no-pager'
-# alias dockerstatus='systemctl --user status docker --no-pager'
-# alias dockerstop='systemctl --user stop docker --no-pager'
+{{- end }}
 
 # ECR login
 alias docker=podman
