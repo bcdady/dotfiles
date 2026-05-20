@@ -1,16 +1,10 @@
 ---
 name: Release project
 
-# Controls when the workflow will run
 on:
   push:
     branches:
       - main
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -21,9 +15,9 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Release
-        uses: huggingface/semver-release-action@v1.1.1
+        uses: huggingface/semver-release-action@1a164868d29fb12acd39d70e8e47326db9d78ad2 # v1.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_BCDADY_PUSH }}
