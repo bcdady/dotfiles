@@ -51,13 +51,6 @@ bw-check() {
   [[ "$BW_STATUS" == "unlocked" ]] || echo "Run 'bw unlock' to unlock vault"
 }
 
-{{- if eq .chezmoi.os "linux" }}
-# Skip RESH in Kiro - it has its own history features
-if [[ "$TERM_PROGRAM" != "kiro" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
-  test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
-fi
-{{- end }}
-
 # list available versions of python
 # echo 'Available python (3) versions / updates:'
 # mise ls-remote python | grep -E '^3\.[0-9]{1,3}\.[0-9]{1,3}$' | tail -n 10
@@ -84,7 +77,7 @@ alias vpns='vpn sessions-list'
 # VPN status check - run 'vpns' to check status
 
 # Skip starship in Kiro - it manages its own prompt
-if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]] then
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; then
   command -v starship >/dev/null 2>&1 || curl -sS https://starship.rs/install.sh | sh
   eval "$(starship init bash)"
 fi
