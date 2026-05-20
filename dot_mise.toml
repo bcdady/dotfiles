@@ -2,13 +2,13 @@
 
 RUST_WITHOUT = 'rust-docs'
 
-[alias]
+[tool_alias]
 k = "kubectl"
 
 [tools]
 # AWS and Cloud Tools
 awscli = "latest"
-aws-sso-cli = "latest"
+aws-sso = "latest"
 terraform = "prefix:1"
 terraform-docs = "prefix:0"
 tflint = "latest"
