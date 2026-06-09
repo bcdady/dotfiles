@@ -6,9 +6,6 @@ AWS_RETRY_MODE = 'adaptive'
 
 EDITOR = "code -r"
 
-GITLAB_TOKEN = "DO NOT COMMIT SECRETS"
-GITLAB_HOST = "DO NOT COMMIT SECRETS"
-
 RUST_WITHOUT = 'rust-docs'
 
 [tools]
