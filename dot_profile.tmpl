@@ -9,6 +9,9 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+# GitLab token — source early so GUI apps (Zed, etc.) inherit it
+[ -f "$HOME/.config/shell/gitlab-token.sh" ] && . "$HOME/.config/shell/gitlab-token.sh"
+
 {{- if eq .chezmoi.os "darwin" }}
 # if running zsh
 if [ -n "$ZSH_VERSION" ]; then
