@@ -20,6 +20,20 @@ fi
 # run 'mise activate bash' in a shell if you need auto-switching per-directory
 eval "$(~/.local/bin/mise activate bash --shims)"
 
+# Ensure critical global tools (MCP runtimes, etc.) are installed.
+# Runs in background to avoid blocking shell startup.
+_mise_ensure_globals() {
+  local missing=0
+  for tool in bun uv node opencode; do
+    mise which "$tool" &>/dev/null || missing=1
+  done
+  if [[ $missing -eq 1 ]]; then
+    mise install --yes &>/dev/null
+  fi
+}
+_mise_ensure_globals &
+disown
+
 # Skip homebrew maintenance in Kiro to speed up shell startup
 [[ "$TERM_PROGRAM" != "kiro" ]] && [[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew"
 

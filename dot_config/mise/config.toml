@@ -1,0 +1,11 @@
+[tools]
+amazon-ecr-credential-helper = "latest"
+aws-sso = "latest"
+bats = "1.13.0"
+bun = "latest"
+fd = "latest"
+node = "latest"
+opencode = "latest"
+overmind = "latest"
+rtk = "latest"
+uv = "latest"
