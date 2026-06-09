@@ -16,8 +16,9 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; t
 fi
 {{- end }}
 
-# activate mise (replacement for aqua, asdf)
-eval "$(~/.local/bin/mise activate bash)"
+# activate mise via shims (near-instant vs ~46ms for hook mode)
+# run 'mise activate bash' in a shell if you need auto-switching per-directory
+eval "$(~/.local/bin/mise activate bash --shims)"
 
 # Skip homebrew maintenance in Kiro to speed up shell startup
 [[ "$TERM_PROGRAM" != "kiro" ]] && [[ -f "${HOME}/.tools/homebrew" ]] && bash "${HOME}/.tools/homebrew"
@@ -90,24 +91,29 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]] th
 fi
 {{- end }}
 
-# Skip kubeconfig updates in Kiro to speed up shell startup
-if [[ "$TERM_PROGRAM" != "kiro" ]] && [[ $(grep -c sap-prod ~/.kube/config 2>/dev/null || echo 0) -eq 0 ]]; then
+# Update kubeconfig on demand (was ~2.7s of network calls on every shell startup)
+update-kubeconfig() {
   for cluster in $(aws eks list-clusters --query 'clusters[*]' --output text 2>/dev/null); do
     aws eks update-kubeconfig --name "${cluster}" >/dev/null 2>&1
   done
-fi
+  echo "kubeconfig updated"
+}
 
 function getconfig() {
   kubectl exec "$(kubectl get pods --namespace app-"${1}" -o name | head -n 1)" --namespace app-"${1}" -c app-base-http -- cat /go/config/"${1}".json
 }
 
-# Enable kubectl autocomplete
-(command -v kubectl >/dev/null 2>&1) && {
+# Lazy-load kubectl completion (~33ms deferred until first tab-complete)
+_lazy_kubectl() {
+  unset -f _lazy_kubectl
+  source <(kubectl completion bash)
   complete -o default -F __start_kubectl kubectl
   complete -o default -F __start_kubectl k
 }
-
-# test "$TERM_PROGRAM" = "WarpTerminal" || command -v kubectl && source <(kubectl completion bash)
+if command -v kubectl >/dev/null 2>&1; then
+  complete -F _lazy_kubectl kubectl
+  complete -F _lazy_kubectl k
+fi
 
 # Enable terraform autocomplete
 (command -v terraform >/dev/null 2>&1) && complete -C "$(mise which terraform)" terraform
