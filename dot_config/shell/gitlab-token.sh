@@ -35,10 +35,12 @@ if [ -z "${GITLAB_TOKEN:-}" ]; then
   if [ -f "$_gltoken_cache" ] && [ "$(( $(command date +%s) - $(stat -c %Y "$_gltoken_cache") ))" -lt 86400 ]; then
     GITLAB_TOKEN=$(cat "$_gltoken_cache")
   elif command -v glab >/dev/null 2>&1; then
-    GITLAB_TOKEN=$(glab auth status --show-token 2>&1 | grep "Token found" | awk '{print $NF}')
+    GITLAB_TOKEN=$(timeout 3 glab auth status --show-token 2>&1 | grep "Token found" | awk '{print $NF}')
     if [ -n "$GITLAB_TOKEN" ]; then
       mkdir -p "$_gldir"
       printf '%s' "$GITLAB_TOKEN" > "$_gltoken_cache"
+    else
+      echo "Warning: could not retrieve GITLAB_TOKEN — ${GITLAB_HOST:-GitLab host} may be unreachable (VPN connected?)" >&2
     fi
   fi
   [ -n "${GITLAB_TOKEN:-}" ] && export GITLAB_TOKEN
