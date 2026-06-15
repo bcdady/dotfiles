@@ -117,6 +117,9 @@ function getconfig() {
   kubectl exec "$(kubectl get pods --namespace app-"${1}" -o name | head -n 1)" --namespace app-"${1}" -c app-base-http -- cat /go/config/"${1}".json
 }
 
+# krew plugin manager
+export PATH="${PATH}:${HOME}/.krew/bin"
+
 # Lazy-load kubectl completion (~33ms deferred until first tab-complete)
 _lazy_kubectl() {
   unset -f _lazy_kubectl
