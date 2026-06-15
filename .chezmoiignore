@@ -1,3 +1,4 @@
+AGENTS.md
 .zshrc
 {{- if ne .chezmoi.os "darwin" }}
 .macos
