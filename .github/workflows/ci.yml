@@ -22,8 +22,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Release
         uses: huggingface/semver-release-action@v1.1.1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_BCDADY_PUSH }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
