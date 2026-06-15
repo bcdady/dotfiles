@@ -1,3 +1,7 @@
+{{- $bwStatus := output "bw" "status" | fromJson -}}
+{{- if eq $bwStatus.status "unauthenticated" -}}
+{{-   fail "Bitwarden: not logged in — run: bw login" -}}
+{{- end -}}
 
 [user]
-	email = {{ (bitwarden "item" "383dc181-1c2c-4124-bba8-af4300281f82").login.username }}
+	email = {{ $bwStatus.userEmail }}
