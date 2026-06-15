@@ -102,3 +102,9 @@ fi
 # Don't check mail when opening terminal.
 unset MAILCHECK
 
+# Auth tokens (shared POSIX scripts, also sourced from .profile for GUI apps)
+for _sh in "$HOME/.config/shell"/*-token.sh; do
+  [ -f "$_sh" ] && . "$_sh"
+done
+unset _sh
+

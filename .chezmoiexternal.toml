@@ -1,0 +1,8 @@
+# External git repos managed by chezmoi
+# Run `chezmoi apply` to clone/pull updates
+# Run `chezmoi update` to refresh all externals
+
+[".config/opencode"]
+    type = "git-repo"
+    url = "https://subsplash.io/bryan/opencode-config.git"
+    refreshPeriod = "168h"
