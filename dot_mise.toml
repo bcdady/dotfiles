@@ -1,7 +1,7 @@
 [env]
 AWS_CLI_AUTO_PROMPT = 'on-partial'
 AWS_DEFAULT_REGION = 'us-west-2'
-AWS_PROFILE = 'infra'
+AWS_PROFILE = 'dev'
 AWS_RETRY_MODE = 'adaptive'
 
 EDITOR = "code -r"
@@ -10,30 +10,30 @@ RUST_WITHOUT = 'rust-docs'
 
 [tools]
 # AWS and Cloud Tools
-awscli = "latest"
-terraform = "prefix:1.12"
+awscli = "prefix:2"
+terraform = "prefix:1"
 terraform-docs = "prefix:0"
-tflint = "latest"
-vault = "prefix:1"
+tflint = "prefix:0"
+vault = "prefix:2"
 
 # Kubernetes Tools
-helm = "prefix:3.16"
-krew = "latest"
-kube-linter = "latest"
-kubectl = "prefix:1.32"
-kubectx = "prefix:0.9"
-kubie = "latest"
+helm = "prefix:3"
+krew = "prefix:0"
+kube-linter = "prefix:0"
+kubectl = "prefix:1"
+kubectx = "prefix:0"
+kubie = "prefix:0"
 
 # Development Languages
-golang = "prefix:1.24"
-nodejs = "23.5.0"
-python = "prefix:3.12"
+golang = "prefix:1"
+nodejs = "lts"
+python = "prefix:3"
 
 # Development Tools
-bazel = "5.2.0"
+bazel = "prefix:5"
 bitwarden = "latest"
-checkov = "3.2.2"
-dasel = "2.8.1"
+checkov = "prefix:3"
+dasel = "prefix:2"
 gitconfig = "latest"
 glab = "latest"
 hadolint = "latest"
@@ -41,9 +41,8 @@ jq = "latest"
 mysql = "prefix:8.0"
 tfsec = "latest"
 yamllint = "latest"
-yarn = "latest"
+yarn = "prefix:3"
 
 # Python Tools
 ruff = "latest"
 uv = "latest"
-

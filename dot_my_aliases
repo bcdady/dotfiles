@@ -57,10 +57,6 @@ alias mrwip='glab mr --message "WIP" --remove_source_branch --squash --target $(
 # alias dockerstatus='systemctl --user status docker --no-pager'
 # alias dockerstop='systemctl --user stop docker --no-pager'
 
-# ECR login
-alias docker=podman
-alias ecr-login='aws ecr get-login-password --region $AWS_REGION | docker login $ECR_URL --username AWS --password-stdin'
-
 # kubernetes-specific aliases
 test -f "${HOME}/.tools/kube-aliases" && . "${HOME}/.tools/kube-aliases" || echo "Error: ${HOME}/.tools/kube-aliases Not found"
 
