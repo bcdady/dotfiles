@@ -1,11 +1,39 @@
+[env]
+RUST_WITHOUT = 'rust-docs'
+
 [tools]
 amazon-ecr-credential-helper = "latest"
 aws-sso = "latest"
-bats = "1.13.0"
+awscli = "prefix:2"
+bats = "prefix:1"
+bitwarden = "latest"
 bun = "latest"
 fd = "latest"
-node = "latest"
+gitconfig = "latest"
+glab = "latest"
+go = "prefix:1"
+node = "lts"
 opencode = "latest"
-overmind = "latest"
 rtk = "latest"
+terraform = "prefix:1"
+terraform-docs = "prefix:0"
+tflint = "latest"
+vault = "prefix:2"
+
+# Kubernetes Tools
+helm = "prefix:3.16"
+krew = "latest"
+kube-linter = "latest"
+kubectl = "prefix:1.32"
+kubectx = "prefix:0.9"
+kubie = "latest"
+
+tfsec = "latest"
+yamllint = "latest"
+yarn = "prefix:4"
+
+# Python Tools
+ruff = "latest"
 uv = "latest"
+
+

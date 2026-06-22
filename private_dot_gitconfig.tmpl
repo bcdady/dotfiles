@@ -87,21 +87,15 @@
 	# https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
 	# On mac and Linux, use "input"
 	autocrlf = input
-	editor = code --wait
+	editor = zed --wait
 [diff]
-	# Also: EDITOR is probably set in env
-{{- if eq .chezmoi.os "darwin" }}
-	guitool = code -d
-	tool = code -d
-{{- else if eq .chezmoi.os "linux" }}
+	# EDITOR may also set in env
+{{- if eq .chezmoi.os "linux" }}
 	guitool = meld
 	tool = meld
 {{- end }}
-	guitool = meld
-	tool = meld
 [rebase]
 	autoStash = true
-	tool = code -r --wait
 [fetch]
 	prune = true
 [http]
@@ -113,9 +107,7 @@
 	sslBackend = gnutls
 {{- end }}
 [merge]
-{{- if eq .chezmoi.os "darwin" }}
-	tool = code
-{{- else if eq .chezmoi.os "linux" }}
+{{- if eq .chezmoi.os "linux" }}
 	tool= meld
 {{- end }}
 [filter "lfs"]

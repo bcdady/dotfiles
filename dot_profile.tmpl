@@ -20,16 +20,17 @@ unset _sh
 if [ -n "$ZSH_VERSION" ]; then
     # include .zhrc if it exists
     if [ -f "$HOME/.zshrc" ]; then
-        echo "Sourcing ${HOME}/.zshrc"
         . "$HOME/.zshrc"
     fi
 fi
 {{- else if eq .chezmoi.os "linux" }}
+# AWS default profile (inherited by GUI apps and all subprocesses)
+export AWS_PROFILE=dev
+
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     if [ -f "$HOME/.bashrc" ]; then
-        echo "Sourcing ${HOME}/.bashrc"
         . "$HOME/.bashrc"
     fi
 fi

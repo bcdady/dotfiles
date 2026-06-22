@@ -1,16 +1,14 @@
 [env]
-AWS_CLI_AUTO_PROMPT = 'on-partial'
-AWS_DEFAULT_REGION = 'us-west-2'
-AWS_PROFILE = 'dev'
-AWS_RETRY_MODE = 'adaptive'
-
-EDITOR = "code -r"
 
 RUST_WITHOUT = 'rust-docs'
+
+[tool_alias]
+k = "kubectl"
 
 [tools]
 # AWS and Cloud Tools
 awscli = "prefix:2"
+aws-sso = "latest"
 terraform = "prefix:1"
 terraform-docs = "prefix:0"
 tflint = "prefix:0"
@@ -31,7 +29,9 @@ python = "prefix:3"
 
 # Development Tools
 bazel = "prefix:5"
+fd = "latest"
 bitwarden = "latest"
+bun = "latest"
 checkov = "prefix:3"
 dasel = "prefix:2"
 gitconfig = "latest"
@@ -39,6 +39,8 @@ glab = "latest"
 hadolint = "latest"
 jq = "latest"
 mysql = "prefix:8.0"
+opencode = "latest"
+rtk = "latest"
 tfsec = "latest"
 yamllint = "latest"
 yarn = "prefix:3"
@@ -46,3 +48,4 @@ yarn = "prefix:3"
 # Python Tools
 ruff = "latest"
 uv = "latest"
+
