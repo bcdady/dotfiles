@@ -24,8 +24,11 @@ if [ -n "$ZSH_VERSION" ]; then
     fi
 fi
 {{- else if eq .chezmoi.os "linux" }}
-# AWS default profile (inherited by GUI apps and all subprocesses)
+# AWS environment (inherited by GUI apps and all subprocesses)
 export AWS_PROFILE=dev
+export AWS_DEFAULT_REGION=us-west-2
+export AWS_CLI_AUTO_PROMPT=on-partial
+export AWS_RETRY_MODE=adaptive
 
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
