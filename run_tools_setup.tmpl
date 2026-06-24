@@ -89,6 +89,11 @@ if ! command_exists warp-terminal; then
     install_deb "Warp Terminal" "https://app.warp.dev/get_warp?package=deb" "warp.deb"
 fi
 
+# Terminal (WezTerm for use with OpenCode)
+curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
+
 # Communication tools
 install_tool slack "sudo snap install slack"
 install_tool discord "sudo snap install discord"

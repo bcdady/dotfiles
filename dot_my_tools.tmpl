@@ -16,6 +16,9 @@ if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; t
 fi
 {{- end }}
 
+# Add Krew to PATH
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
 # activate mise via shims (near-instant vs ~46ms for hook mode)
 # run 'mise activate bash' in a shell if you need auto-switching per-directory
 eval "$(~/.local/bin/mise activate bash --shims)"
@@ -66,12 +69,6 @@ bw-check() {
   [[ "$BW_STATUS" == "unlocked" ]] || echo "Run 'bw unlock' to unlock vault"
 }
 
-{{- if eq .chezmoi.os "linux" }}
-# Skip RESH in Kiro - it has its own history features
-if [[ "$TERM_PROGRAM" != "kiro" ]] && [[ "$TERM_PROGRAM" != "WarpTerminal" ]]; then
-  test -f ~/.resh/shellrc || curl -fsSL https://raw.githubusercontent.com/curusarn/resh/master/scripts/rawinstall.sh | bash
-fi
-{{- end }}
 
 # echo ''
 {{- if eq .chezmoi.os "linux" }}
@@ -88,7 +85,7 @@ alias vpns='vpn sessions-list'
 # VPN status check - run 'vpns' to check status
 
 # Skip starship in Kiro - it manages its own prompt
-if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]] then
+if [[ "$TERM_PROGRAM" != "WarpTerminal" ]] && [[ "$TERM_PROGRAM" != "kiro" ]]; then
   command -v starship >/dev/null 2>&1 || curl -sS https://starship.rs/install.sh | sh
   eval "$(starship init bash)"
 fi
@@ -105,9 +102,6 @@ update-kubeconfig() {
 function getconfig() {
   kubectl exec "$(kubectl get pods --namespace app-"${1}" -o name | head -n 1)" --namespace app-"${1}" -c app-base-http -- cat /go/config/"${1}".json
 }
-
-# krew plugin manager
-export PATH="${PATH}:${HOME}/.krew/bin"
 
 # Lazy-load kubectl completion (~33ms deferred until first tab-complete)
 _lazy_kubectl() {

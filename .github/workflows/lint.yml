@@ -1,0 +1,43 @@
+---
+name: Lint
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-templates:
+    name: Validate chezmoi templates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io/lb/github)" -- -b "$HOME/bin"
+
+      - name: Render all templates
+        run: |
+          failed=0
+          for f in $(find . -name '*.tmpl' -type f | sort); do
+            if ! ~/bin/chezmoi execute-template < "$f" > /dev/null 2>&1; then
+              echo "::error file=$f::Template rendering failed"
+              ~/bin/chezmoi execute-template < "$f" > /dev/null
+              failed=1
+            fi
+          done
+          exit $failed
+
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: ShellCheck non-template files
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
+        with:
+          ignore_paths: .github .chezmoiscripts
+          ignore_names: "*.tmpl"
