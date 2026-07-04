@@ -16,15 +16,17 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Install chezmoi
-        run: sh -c "$(curl -fsLS get.chezmoi.io/lb/github)" -- -b "$HOME/bin"
+        uses: twpayne/action-setup@v4
+        with:
+          version: latest
 
       - name: Render all templates
         run: |
           failed=0
           for f in $(find . -name '*.tmpl' -type f | sort); do
-            if ! ~/bin/chezmoi execute-template < "$f" > /dev/null 2>&1; then
+            if ! chezmoi execute-template < "$f" > /dev/null 2>&1; then
               echo "::error file=$f::Template rendering failed"
-              ~/bin/chezmoi execute-template < "$f" > /dev/null
+              chezmoi execute-template < "$f" > /dev/null
               failed=1
             fi
           done
