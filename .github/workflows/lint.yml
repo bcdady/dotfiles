@@ -18,7 +18,8 @@ jobs:
       - name: Install chezmoi
         run: |
           mkdir -p "$HOME/bin"
-          curl -L -o chezmoi.tar.gz https://github.com/twpayne/chezmoi/releases/download/v2.50.0/chezmoi-linux-amd64.tar.gz
+          CHEZMOI_VERSION="v2.52.2"
+          curl -fsSL -o chezmoi.tar.gz "https://github.com/twpayne/chezmoi/releases/download/${CHEZMOI_VERSION}/chezmoi-linux-amd64.tar.gz"
           tar -xzf chezmoi.tar.gz -C "$HOME/bin"
           chmod +x "$HOME/bin/chezmoi"
           echo "$HOME/bin" >> $GITHUB_PATH
