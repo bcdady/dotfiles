@@ -16,9 +16,12 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Install chezmoi
-        uses: twpayne/action-setup@v4
-        with:
-          version: latest
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -L -o chezmoi.tar.gz https://github.com/twpayne/chezmoi/releases/download/v2.50.0/chezmoi-linux-amd64.tar.gz
+          tar -xzf chezmoi.tar.gz -C "$HOME/bin"
+          chmod +x "$HOME/bin/chezmoi"
+          echo "$HOME/bin" >> $GITHUB_PATH
 
       - name: Render all templates
         run: |
