@@ -24,14 +24,27 @@ jobs:
           chmod +x "$HOME/bin/chezmoi"
           echo "$HOME/bin" >> $GITHUB_PATH
 
-      - name: Render all templates
+      - name: Verify chezmoi configuration
+        run: chezmoi verify
+
+      - name: Render and validate all templates
         run: |
           failed=0
           for f in $(find . -name '*.tmpl' -type f | sort); do
-            if ! chezmoi execute-template < "$f" > /dev/null 2>&1; then
+            # Check if template renders without errors
+            if ! output=$(chezmoi execute-template < "$f" 2>&1); then
               echo "::error file=$f::Template rendering failed"
-              chezmoi execute-template < "$f" > /dev/null
+              echo "$output"
               failed=1
+              continue
+            fi
+
+            # If it's a shell script, lint the rendered output
+            if head -1 "$f" | grep -q '#!.*sh'; then
+              if ! echo "$output" | shellcheck -; then
+                echo "::error file=$f::Rendered shell script has syntax errors"
+                failed=1
+              fi
             fi
           done
           exit $failed
