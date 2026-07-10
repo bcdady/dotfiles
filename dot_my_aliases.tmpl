@@ -67,3 +67,5 @@ awsactive() {
 
 # GitLab CLI auth
 alias glab-login='glab auth login --hostname subsplash.io --api-protocol https --web'
+# Force-refresh GITLAB_TOKEN in the current shell (clears 1h cache, re-reads from glab config.yml)
+alias gitlab-token-refresh='. ~/.config/shell/gitlab-token.sh refresh'
