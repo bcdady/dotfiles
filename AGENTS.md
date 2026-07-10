@@ -91,6 +91,57 @@ Sensitive values (git email addresses) are pulled from Bitwarden at template ren
 GitHub Actions run on push/PR to `main`:
 - **ci.yml** — semver release via `huggingface/semver-release-action`
 - **commit.yml** — enforces [Conventional Commits](https://www.conventionalcommits.org/) on PRs
+- **lint.yml** — validates every `.tmpl` renders (`chezmoi execute-template`) and runs `shellcheck` on non-template shell files
 - **semgrep.yml** — static analysis scan
 
-Commit messages must follow Conventional Commits format (e.g., `feat:`, `fix:`, `chore:`).
+Additional repo-level checks (from GitHub Apps / branch protection, not from this repo's workflow files):
+- **DCO** — every commit must be `Signed-off-by:` (see [Commits](#commits))
+- **GitGuardian** — secret scanning on pushed content
+
+## Commits
+
+- **Sign off every commit.** Run `git commit -s` so each commit carries a `Signed-off-by` trailer (Developer Certificate of Origin). Commits without a sign-off are rejected by the DCO check.
+- **Use Conventional Commits** for the subject: `type(scope): summary` (e.g. `fix:`, `feat:`, `ci:`, `docs:`, `chore:`). PRs to `main` are validated by the Conventional Commit Checker, and release versions are derived from commit types (`feat:` → minor, `fix:` → patch).
+- **Keep messages minimal.** Prefer a short subject; add a body only when the "why" isn't obvious from the diff. No emojis unless requested.
+
+## Branching and PRs
+
+- **Never push directly to `main`.** Always work on a feature branch and open a pull request.
+- **Branch naming**: `type/short-slug`, matching the commit type — `fix/…`, `feat/…`, `docs/…`, `chore/…`, `ci/…`, `build/…`.
+- **Open PRs with `gh`**:
+  ```bash
+  git checkout -b fix/some-slug
+  # ...commit work with -s...
+  git push -u origin fix/some-slug
+  gh pr create --base main --title "fix(scope): summary" --body "..."
+  ```
+- **Watch CI**: `gh pr checks <number>` or `gh pr view <number> --json statusCheckRollup`.
+
+## Shell Script Conventions
+
+Files sourced from `.profile`/`.bashrc`/`.zshrc` at shell startup must be portable across macOS zsh and Linux bash:
+
+- **Shebang**: `#!/bin/sh` for sourced fragments; no bashisms (no arrays, no `[[`, no `local`).
+- **Guard external tools** with `command -v foo >/dev/null 2>&1` before calling them — many bootstrap paths run before tools are installed.
+- **Use `_`-prefixed variables** for locals in sourced scripts (e.g. `_gldir`, `_gl_force_refresh`) and `unset` them at the end to avoid polluting the caller's environment.
+- **Prefer POSIX tests**: `[ "$a" = "$b" ]`, `[ -f path ]`, `[ path1 -nt path2 ]`. Avoid `==` and `[[ ]]`.
+- **Cache tokens/credentials with an invalidation signal**, not a raw TTL. If the underlying source file (config, keyring export, etc.) can change, gate the cache on `[ "$cache" -nt "$source" ]`, not just on age.
+
+## Pre-Push Validation
+
+Before pushing a branch, run whatever the CI would run — locally:
+
+- **Shell syntax**: `sh -n file`, `dash -n file`, `bash -n file` (POSIX + Debian sh + bash catches most portability bugs).
+- **ShellCheck**: `shellcheck path/to/script` (matches the `lint.yml` job). If `shellcheck` isn't installed locally, note it and rely on CI.
+- **Chezmoi templates**: `chezmoi execute-template < path/to/file.tmpl > /dev/null` for each edited `.tmpl`; matches the `Validate chezmoi templates` job.
+- **Deployed state**: `chezmoi diff` to see what would apply. After editing a source file, `chezmoi apply <target>` to deploy — the copy in `$HOME` is **not** the source of truth and drifts silently otherwise.
+- **Secret scan**: `git diff --cached | grep -iE '(token|password|secret|api[_-]?key)'` before committing. Secrets should come from Bitwarden templating, never a plaintext commit.
+
+## Guardrails — Do Not Touch Without Approval
+
+- **`.chezmoiignore`, `.chezmoiroot`**: control what chezmoi manages; changing them can silently orphan or clobber files in `$HOME`.
+- **`.chezmoidata/**`, template data files**: change platform behavior globally.
+- **`private_*` files**: contain or template sensitive material; never commit rendered output.
+- **`.git/`**: obvious, but stated explicitly for LLM agents.
+
+If a task appears to require editing any of the above, stop and confirm with the user first.
