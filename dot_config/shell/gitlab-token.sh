@@ -34,14 +34,20 @@ if [ -z "${GITLAB_TOKEN:-}" ]; then
   _gltoken_cache="$_gldir/glab_token"
   if [ -f "$_gltoken_cache" ] && [ "$(( $(command date +%s) - $(stat -c %Y "$_gltoken_cache") ))" -lt 86400 ]; then
     GITLAB_TOKEN=$(cat "$_gltoken_cache")
-  elif command -v glab >/dev/null 2>&1; then
-    GITLAB_TOKEN=$(timeout 3 glab auth status --show-token 2>&1 | grep "Token found" | awk '{print $NF}')
+  elif [ -f "$HOME/.config/glab-cli/config.yml" ]; then
+    # Extract token for the configured host from glab config file
+    # Avoids calling glab auth status which may emit warnings when GITLAB_TOKEN isn't set
+    # Extract just the hostname from GITLAB_HOST if it's a full URL (e.g. https://subsplash.io/ -> subsplash.io)
+    _glhost="${GITLAB_HOST:-gitlab.com}"
+    _glhost=$(printf '%s' "$_glhost" | sed 's#^https\?://##; s#/$##')
+    GITLAB_TOKEN=$(sed -n "/${_glhost}:/,/^[^ ]/p" "$HOME/.config/glab-cli/config.yml" | grep "token:" | head -1 | awk '{print $2}')
     if [ -n "$GITLAB_TOKEN" ]; then
       mkdir -p "$_gldir"
       printf '%s' "$GITLAB_TOKEN" > "$_gltoken_cache"
     else
-      echo "Warning: could not retrieve GITLAB_TOKEN — ${GITLAB_HOST:-GitLab host} may be unreachable (VPN connected?)" >&2
+      echo "Warning: could not find GITLAB_TOKEN in glab config for host ${_glhost}" >&2
     fi
+    unset _glhost
   fi
   [ -n "${GITLAB_TOKEN:-}" ] && export GITLAB_TOKEN
   unset _gltoken_cache
